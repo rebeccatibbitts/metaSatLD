@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block nav-home %}active{% endblock %}
+
+{% block customcss %}<link href="{% static 'genform/css/metasat.css' %}" rel="stylesheet">{% endblock %}
+
+{% block title %}
+    MetaSat Generator
+{% endblock %}
+
+<!-- bootstrap modal for pop up
+katie metasat views for fam / seg group
+json ld context/version https://www.w3.org/TR/json-ld/#example-53-sourcing-a-context-to-modify-vocab-and-a-term-definition -->
+
+{% block body %}
+<div class = "container">
+  <div class="topspacing"></div>
+  <h1> Generate JSON-LD using MetaSat </h1>
+  <p> Placeholder text for placeholder stuff. </p>
+    <div class="form-group align-items-center">
+      <form action="generate" method="post">
+        {% csrf_token %}
+        <fieldset>
+<!-- Mission Information -->
+          <!-- External Vocabulary Code -->
+
+          <div id="div_id_exvoc" class="form-group row">
+            <label for="id_exvoc" class="col-form-label col-lg-2 requiredField">
+              External Vocabulary Code
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class="col-lg-8">
+              <input type="text" name="exvoc" class="textinput textInput form-control" required="" id="id_exvoc">
+            </div>
+          </div>
+
+          <!-- External Vocabulary URL -->
+
+          <div id="div_id_exvocurl" class="form-group row">
+            <label for="id_exvocurl" class="col-form-label col-lg-2 requiredField">
+              External Vocabulary URL
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class="col-lg-8">
+              <input type="text" name="exvocurl" class="textinput textInput form-control" required="" id="id_exvocurl">
+            </div>
+          </div>
+
+          <!-- Mission Type -->
+
+          <div id="div_id_mtype" class="form-group row">
+            <label for="id_mtype" class="col-form-label col-lg-2 requiredField">
+              Mission Type
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class="col-lg-8">
+              <input type="text" name="mtype" class="textinput textInput form-control" required="" id="id_mtype">
+            </div>
+          </div>
+
+          <!-- Mission Name -->
+
+          <div id="div_id_mname" class="form-group row">
+            <label for="id_mname" class="col-form-label col-lg-2 requiredField">
+              Mission Name
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class="col-lg-8">
+              <input type="text" name="mname" class="textinput textInput form-control" required="" id="id_mname">
+            </div>
+          </div>
+
+          <!-- Space Agency -->
+
+          <div id="div_id_aname" class="form-group row">
+            <label for="id_aname" class="col-form-label col-lg-2 requiredField">
+              Space Agency
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class="col-lg-8">
+              <input type="text" name="aname" class="textinput textInput form-control" required="" id="id_aname">
+            </div>
+          </div>
+
+          <!-- Space Agency Abbreviation -->
+
+          <div id="div_id_acode" class="form-group row">
+            <label for="id_acode" class="col-form-label col-lg-2 requiredField">
+              Space Agency Abbreviation
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class="col-lg-8">
+              <input type="text" name="acode" class="textinput textInput form-control" required="" id="id_acode">
+            </div>
+          </div>
+
+          <!-- Country -->
+
+          <div id="div_id_country" class="form-group row">
+            <label for="id_country" class="col-form-label col-lg-2 requiredField">
+              Country
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class="col-lg-8">
+              <input type="text" name="country" class="textinput textInput form-control" required="" id="id_country">
+            </div>
+          </div>
+
+<!-- Segment Selection -->
+
+          <div id="div_id_segment" class="form-group row">
+            <label for="" class="col-form-label col-lg-2 requiredField">
+              Segment
+              <!-- <span class="asteriskField">*</span> -->
+            </label>
+            <div class=" col-lg-8">
+
+              <!-- Space Segment  -->
+
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input segment_child" name="segment" id="space" value="5">
+                <label class="custom-control-label" for="space">
+                  Space Segment
+                </label>
+              </div>
+                <div class="form-group align-items-center" id="space_child" style="display:none">
+
+                  <div id="blah" class="form-group row">
+                    <label for="blah" class="col-form-label col-lg-2 requiredField">
+                      Space Child
+                      <!-- <span class="asteriskField">*</span> -->
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" name="blah" class="textinput textInput form-control" required="" id="blah">
+                    </div>
+
+                  </div>
+                </div>
+
+              <!-- Launch Segment -->
+
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input segment_child" name="segment" id="launch" value="6">
+                <label class="custom-control-label" for="launch">
+                  Launch Segment
+                </label>
+              </div>
+
+                <!-- Launch Child -->
+
+                <div class="form-group align-items-center" id="launch_child" style="display:none">
+
+                  <!-- Launch Timestamp -->
+
+                  <div id="launchTimestamp" class="form-group row">
+                    <label for="launchTimestamp" class="col-form-label col-lg-2 requiredField">
+                      Launch Timestamp
+                      <!-- <span class="asteriskField">*</span> -->
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" name="launchTimestamp" class="textinput textInput form-control" required="" id="launchTimestamp">
+                    </div>
+                  </div>
+
+                  <!-- Rocket -->
+
+                  <div id="rocket" class="form-group row">
+                    <label for="rocket" class="col-form-label col-lg-2 requiredField">
+                      Rocket
+                      <!-- <span class="asteriskField">*</span> -->
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" name="rocket" class="textinput textInput form-control" required="" id="rocket">
+                    </div>
+                  </div>
+
+                  <!-- Launch Site -->
+
+                  <div id="launchSite" class="form-group row">
+                    <label for="launchSite" class="col-form-label col-lg-2 requiredField">
+                      Launch Site
+                      <!-- <span class="asteriskField">*</span> -->
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" name="launchSite" class="textinput textInput form-control" required="" id="launchSite">
+                    </div>
+                  </div>
+
+                  <!-- Launch Service Provider -->
+
+                  <div id="launchServiceProvider" class="form-group row">
+                    <label for="launchServiceProvider" class="col-form-label col-lg-2 requiredField">
+                      Launch Service Provider
+                      <!-- <span class="asteriskField">*</span> -->
+                    </label>
+                    <div class="col-lg-8">
+                      <input type="text" name="launchServiceProvider" class="textinput textInput form-control" required="" id="launchServiceProvider">
+                    </div>
+                  </div>
+
+                </div>
+
+              <!-- Ground Segment -->
+
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input segment_child" name="segment" id="ground" value="7">
+                <label class="custom-control-label" for="ground">
+                  Ground Segment
+                </label>
+              </div>
+
+              <!-- User Segment -->
+
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input segment_child" name="segment" id="userseg" value="8">
+                <label class="custom-control-label" for="userseg">
+                  User Segment
+                </label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+<!-- Submit Button -->
+
+        <div class="buttonHolder">
+          <input type="submit" name="submit" value="Submit" class="btn btn-primary button white" id="submit-id-submit">
+        </div>
+
+      </form>
+      {% for element in allElements %}
+        {{ element.identifier }}
+        <br>
+      {% endfor %}
+    </div>
+
+</div>
+
+<script>
+
+$( document ).ready(function() {
+
+function getCookie(c_name)
+{
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+ }
+
+ $(".segment_child").click(function(){
+     console.log("I clicked the segment child");
+     var segid = $(this).attr("id");
+     $("#"+segid+"_child").toggle();
+     console.log(segid);
+
+   });
+
+ // $("#id_sseg").click(function(){
+ //     console.log("I clicked the space segment");
+ //     $("#space_child").toggle()
+ //
+ //   });
+ //
+ // $("#id_lseg").click(function(){
+ //     console.log("I clicked the launch segment");
+ //     $("#launch_child").toggle()
+ //   });
+ //
+ // $("#id_gseg").click(function(){
+ //     console.log("I clicked the ground segment");
+ //   });
+ //
+ // $("#id_useg").click(function(){
+ //     console.log("I clicked the user segment");
+ //   });
+ });
+
+
+</script>
+
+{% endblock %}

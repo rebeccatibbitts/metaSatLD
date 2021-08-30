@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block nav-home %}active{% endblock %}
+
+{% block customcss %}<link href="{% static 'genform/css/metasat.css' %}" rel="stylesheet">{% endblock %}
+
+{% block title %}
+    MetaSat Generator
+{% endblock %}
+
+{% block body %}
+<div class = "container">
+  <div class="form-group align-items-center">
+  <div class="topspacing"></div>
+      <h1> Generate JSON-LD using MetaSat </h1>
+      <p> This tool generates JSON-LD files using MetaSat vocabulary. Simply fill out a form and press the "Generate!" button to produce a custom JSON-LD file for your mission.</p>
+        <h2> Upload Your Own JSON-LD file</h2>
+        <p> Our tool will auto-generate a form from a valid JSON-LD file.</p>
+<!-- insert File upload field -->
+<!-- template buttons -->
+    <div class= "row">
+      <div class = col-md-6>
+        <!-- <form method="post" id="externalFile">
+          <fieldset>
+          {% csrf_token %}
+          <div class="external-file">
+            <input type="file" class="custom-file-input">
+            <label class="custom-file-label" for="externalFile">Upload Template</label>
+          </div>
+      <div class = col-md-6>
+        <div class="buttonHolder">
+          <input type="submit" name="externaltemplate" value="Upload" class="btn btn-primary button white ibutton" id="exuploadsubmit">
+        </div>
+        </fieldset>
+        </form> -->
+        <form enctype="multipart/form-data">
+          {% csrf_token %}
+          {% crispy form form.helper %}
+          </div>
+          <div class = col-md-6>
+          <div class="buttonHolder">
+            <input type="submit" name="externaltemplate" value="Upload" class="btn btn-primary button white ibutton" id="exuploadsubmit">
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <h2> Start with a Template</h2>
+    <p> Pick one of our suggested structures to describe your mission.</p>
+
+    <div class= "row">
+      <div class = col-md-2>
+        <div class="buttonHolder">
+          <input type="submit" name="context" value="Context" class="btn btn-primary button white ibutton" id="icontext">
+        </div>
+      </div>
+      <div class = col-md-2>
+        <div class="buttonHolder">
+          <input type="submit" name="example" value="Example" class="btn btn-primary button white ibutton" id="iexample">
+        </div>
+      </div>
+      </div>
+
+  <!-- generated fields begin here -->
+
+    <div class="form-group align-items-center">
+      <form action="generate" method="post">
+        {% csrf_token %}
+        <fieldset>
+          <div class = "test" style="display:none" id=accordion></div>
+          <br>
+          <div class="buttonHolder">
+            <input type="submit" name="generate" value="Generate" class="btn btn-success button white gbutton" id="gbutton" style="display:none" >
+          </div>
+        </fieldset>
+      </form>
+  </div>
+</div>
+
+<script>
+
+$( document ).ready(function() {
+
+function getCookie(c_name)
+{
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+ }
+
+ $(".ibutton").click(function(event){
+    event.preventDefault();
+    console.log("I clicked the i button");
+    var importId = $(this).attr("id");
+    console.log(importId)
+
+    var $upload = $('.ibutton[exuploadsubmit]');
+    if (importId == "exuploadsubmit") {
+        var data = new FormData($('form').get(0));
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+
+        });
+
+        $.ajax(
+        {
+            url: "/importTemplate",
+            type:"POST",
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+
+            // write programmatically on python side to capture structure
+            // assign variables to nested
+            success: function(result)
+            {
+              function printArray(arr) {
+                for (var i = 0; i < arr.length; i++)
+                  if (Array.isArray(arr[i])) {
+                      console.log("I'm here")
+                      printArray(arr[i])
+                } else {
+                      console.log(arr[i]);
+                }
+              }
+
+              console.log(result)
+              for (i in result) {
+                var fieldID = String(i)
+                var key = result[i]["key"]
+                var value = result[i]["value"]
+
+                if (result[i]["value"] == undefined) {
+                  var elementField =
+                    '<div class = col-lg-12>'+
+                    '<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">'+
+                    '<div class="card-body">'+
+                    '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                    '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6">'+
+                    key+
+                    '</label>'
+                  var elementInput =
+                      '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-contro l" id="'+fieldID+'_'+key+'" placeholder="">'+
+                      '</div>'+
+                      '</div>'
+                } else {
+                    var elementField =
+                      '<div class = col-lg-12>'+
+                      '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                      '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6">'+
+                      key+
+                      '</label>'
+                    var elementInput =
+                    // '<div class="col-lg-8">'+
+                      '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-contro l" id="'+fieldID+'_'+key+'" placeholder="'+value+'">'+
+                      '</div>'+
+                      '</div>'
+                  }
+                $(".test").append(elementField);
+                $(".test").append(elementInput);
+            }
+            $(".test").toggle()
+            $(".gbutton").toggle()
+          },
+
+
+
+            error: function (xhr, ajaxOptions, thrownError) {
+              console.log("ERROR")
+            alert(xhr.status);
+            alert(thrownError);
+         },
+
+        });
+    } else {
+      console.log("bad logic");
+
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+
+    });
+
+    $.ajax(
+    {
+        url: "/importTemplate",
+        type:"POST",
+        data: {
+          "templateId": importId,
+        },
+
+        // write programmatically on python side to capture structure
+        // assign variables to nested
+        success: function(result)
+        {
+          function printArray(arr) {
+            for (var i = 0; i < arr.length; i++)
+              if (Array.isArray(arr[i])) {
+                  console.log("I'm here")
+                  printArray(arr[i])
+            } else {
+                  console.log(arr[i]);
+            }
+          }
+
+          console.log(result)
+          for (i in result) {
+            var fieldID = String(i)
+            var key = result[i]["key"]
+            var value = result[i]["value"]
+
+            if (result[i]["value"] == undefined) {
+              var elementField =
+                '<div class = col-lg-12>'+
+                '<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">'+
+                '<div class="card-body">'+
+                '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6 ">'+
+                key+
+                '</label>'
+              var elementInput =
+                  '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-control" id="'+fieldID+'_'+key+'" placeholder="">'+
+                  '</div>'+
+                  '</div>'
+            } else {
+                var elementField =
+                  '<div class = col-lg-12>'+
+                  '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                  '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6">'+
+                  key+
+                  '</label>'
+                var elementInput =
+                // '<div class="col-lg-8">'+
+                  '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-contro l" id="'+fieldID+'_'+key+'" placeholder="'+value+'">'+
+                  '</div>'+
+                  '</div>'
+              }
+            $(".test").append(elementField);
+            $(".test").append(elementInput);
+        }
+        $(".test").toggle()
+        $(".gbutton").toggle()
+      },
+
+
+
+        error: function (xhr, ajaxOptions, thrownError) {
+          console.log("ERROR")
+        alert(xhr.status);
+        alert(thrownError);
+     },
+
+    });
+}
+
+
+});
+});
+
+
+
+</script>
+
+{% endblock %}

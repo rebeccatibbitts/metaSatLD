@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block nav-home %}active{% endblock %}
+
+{% block customcss %}<link href="{% static 'genform/css/metasat.css' %}" rel="stylesheet">{% endblock %}
+
+{% block title %}
+    MetaSat Generator
+{% endblock %}
+
+{% block body %}
+<div class = "container">
+  <div class="topspacing"></div>
+  <h1> Generate JSON-LD using MetaSat </h1>
+  <p> Placeholder text for placeholder stuff. </p>
+    <div class="form-group align-items-center">
+    <form action="generate" method="post">
+
+        {% csrf_token %}
+      {% crispy form form.helper %}
+      <!-- {{ form }} -->
+
+        <!-- {% for seg in form.segment %}
+          <label for="{{ segment.id_for_label }}">
+          <span class="{{segment}}"></span>
+          </label>
+{% endfor %} -->
+
+    </form>
+    </div>
+
+</div>
+
+<script>
+
+$( document ).ready(function() {
+
+function getCookie(c_name)
+{
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+ }
+
+ $("#id_segment_1").click(function(){
+     console.log("I clicked the space segment");
+   });
+
+ $("#id_segment_2").click(function(){
+     console.log("I clicked the launch segment");
+   });
+
+ $("#id_segment_3").click(function(){
+     console.log("I clicked the ground segment");
+   });
+
+ $("#id_segment_4").click(function(){
+     console.log("I clicked the user segment");
+   });
+ });
+
+
+</script>
+
+{% endblock %}

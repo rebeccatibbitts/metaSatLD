@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- pg metadata -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{% block description %}{% endblock %}">
+    {% block metadata %}{% endblock %}
+
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+
+    <!-- jquery ui -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- jquery autocomplete -->
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <!-- custom jquery -->
+    <script src="{% static 'website/javascript/genform.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nestable2@1.6.0/jquery.nestable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nestable2@1.6.0/jquery.nestable.min.css"></script>
+
+        <!-- UIkit -->
+        <script src="{% static 'website/UIKIT/js/uikit.min.js' %}"></script>
+        <link href="{% static 'website/UIKIT/css/uikit.min.css' %}" rel="stylesheet">
+        <!-- <script src="{% static 'website/UIKIT/js/components/nestable.js' %}"></script> -->
+        <script>
+          $('.dd').nestable();
+        </script>
+
+    <!-- bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <!-- additional css -->
+    <link href="{% static 'website/css/metasat.css' %}" rel="stylesheet">
+    {% block customcss %}{% endblock %}
+    {% block customjs %}{% endblock %}
+
+    <!-- pg title -->
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- favicon -->
+   <link rel="icon" type="image/png" href="{% static 'website/img/flavicon.png' %}">
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <img class="img-fluid" style="height:58px" src="{% static 'website/img/MetaSat_Big.png' %}" alt="MetaSat logo"></img>
+            <a class="navbar-brand" href="/"><span class="h1">&nbsp;&nbsp;MetaSat Generator</span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link sr-only sr-only-focusable" href="#content">Skip to main content</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://schema.space/">Return to MetaSat</a>
+                    </li>
+                    <!-- <li class="nav-item {% block nav-home %}{% endblock %}">
+                        <a class="nav-link" href="/">MetaSat Generator</a>
+                    </li> -->
+             </div>
+        </div>
+    </nav>
+    {% block body %}
+    {% endblock %}
+
+</body>
+</html>

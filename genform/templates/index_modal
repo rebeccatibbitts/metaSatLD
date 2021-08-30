@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block nav-home %}active{% endblock %}
+
+{% block customcss %}<link href="{% static 'genform/css/metasat.css' %}" rel="stylesheet">{% endblock %}
+
+{% block title %}
+    MetaSat Generator
+{% endblock %}
+
+{% block body %}
+<div class = "container">
+  <div class="form-group align-items-center">
+  <div class="topspacing"></div>
+  <div style="margin-top: 80px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  z-index: 8;"></div>
+      <h1> Generate JSON-LD using MetaSat </h1>
+      <p> This tool generates JSON-LD files using MetaSat vocabulary. Simply fill out a form and press the "Generate!" button to produce a custom JSON-LD file for your mission.</p>
+        <h2> Upload Your Own JSON-LD file</h2>
+        <p> Our tool will auto-generate a form from a valid JSON-LD file.</p>
+<!-- insert File upload field -->
+<!-- template buttons -->
+    <div class= "row">
+      <div class = col-md-6>
+        <form enctype="multipart/form-data">
+          {% csrf_token %}
+          {% crispy form form.helper %}
+          </div>
+            <div class = col-md-6>
+          <div class="buttonHolder">
+            <input type="submit" name="externaltemplate" value="Upload" class="btn btn-primary button white ibutton" id="exuploadsubmit" accept = ".json, .jsonld">
+          </div>
+        </form>
+          </div>
+      </div>
+    </div>

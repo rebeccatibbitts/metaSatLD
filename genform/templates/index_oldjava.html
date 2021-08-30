@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block nav-home %}active{% endblock %}
+
+{% block customcss %}<link href="{% static 'genform/css/metasat.css' %}" rel="stylesheet">{% endblock %}
+
+{% block title %}
+    MetaSat Generator
+{% endblock %}
+
+{% block body %}
+<div class = "container">
+  <div class="form-group align-items-center">
+  <div class="topspacing"></div>
+  <div style="margin-top: 80px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  z-index: 8;"></div>
+      <h1> Generate JSON-LD using MetaSat </h1>
+      <p> This tool generates JSON-LD files using MetaSat vocabulary. Simply fill out a form and press the "Generate!" button to produce a custom JSON-LD file for your mission.</p>
+        <h2> Upload Your Own JSON-LD file</h2>
+        <p> Our tool will auto-generate a form from a valid JSON-LD file.</p>
+<!-- insert File upload field -->
+<!-- template buttons -->
+    <div class= "row">
+      <div class = col-md-6>
+        <!-- <form method="post" id="externalFile">
+          <fieldset>
+          {% csrf_token %}
+          <div class="external-file">
+            <input type="file" class="custom-file-input">
+            <label class="custom-file-label" for="externalFile">Upload Template</label>
+          </div>
+      <div class = col-md-6>
+        <div class="buttonHolder">
+          <input type="submit" name="externaltemplate" value="Upload" class="btn btn-primary button white ibutton" id="exuploadsubmit">
+        </div>
+        </fieldset>
+        </form> -->
+        <form enctype="multipart/form-data">
+          {% csrf_token %}
+          {% crispy form form.helper %}
+          </div>
+            <div class = col-md-6>
+          <div class="buttonHolder">
+            <input type="submit" name="externaltemplate" value="Upload" class="btn btn-primary button white ibutton" id="exuploadsubmit" accept = ".json, .jsonld">
+          </div>
+        </form>
+          </div>
+      </div>
+    </div>
+
+    <br>
+    <h2> Start with a Template</h2>
+    <p> Pick one of our suggested structures to describe your mission.</p>
+    <div class= "row">
+      <div class = col-md-2>
+        <div class="buttonHolder">
+          <input type="submit" name="context" value="Context" class="btn btn-primary button white ibutton" id="icontext">
+        </div>
+      </div>
+      <div class = col-md-2>
+        <div class="buttonHolder">
+          <input type="submit" name="example" value="Example" class="btn btn-primary button white ibutton" id="iexample">
+        </div>
+      </div>
+      <div class = col-md-2>
+        <div class="buttonHolder">
+          <button type="button" class="btn btn-secondary clearForm" id="clearForm">Clear Form</button>
+        </div>
+      </div>
+      </div>
+
+  <!-- generated fields begin here -->
+
+    <div class="form-group align-items-center">
+      <form action="generate" method="post">
+        {% csrf_token %}
+        <button type='button' class='btn btn-danger removeButton' id='hiddenRem' style='display:None'>-</button>
+        <button type="button" class="btn btn-info addButton">+</button>
+        <fieldset id ="mainForm">
+          <input type="hidden" value="1" id="total_chq">
+          <div class = "test" style="visible" id=accordion></div>
+          <br>
+          <div class="buttonHolder">
+            <input type="submit" name="generate" value="Generate" class="btn btn-success button white gbutton" id="gbutton" style="display:none" >
+          </div>
+        </fieldset>
+      </form>
+  </div>
+</div>
+
+<script>
+
+$( document ).ready(function() {
+
+function getCookie(c_name)
+{
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+ };
+
+ var bigContainer = $('#mainForm')[0]["innerHTML"]
+
+$(".clearForm").click(function(event){
+  console.log("I clicked clear")
+  $("#mainForm").html("");
+  $(".gbutton").toggle()
+});
+
+ $(".addButton").click(function(event){
+   console.log("i clicked add")
+   var temp = parseInt($('#total_chq').val()) + 1;
+   $('#total_chq').val(temp);
+   // $('#total_chq').html(function(i, val) { return +val+1 });
+   var new_chq_no = String(temp)
+   var newElement = "<div id = 'new_"+new_chq_no+"'></div>"
+   $("#accordion").append(newElement);
+   var new_input = "<input type='text' id='new_" + new_chq_no + "'>"+"<select label='Segment' id='select_'" + new_chq_no + "'>{% for x in seggroups %} <option>{{ x }}</option>{% endfor %}</select>";
+   var divID = "#new_" + new_chq_no
+   var new_remove = addRemove(divID)
+   $(divID).append(new_input, new_remove);
+ });
+
+// fix remove on click
+// fix seg texta
+// fix counter variable
+ function addRemove(divID) {
+  var last_chq_no = $('#total_chq').val();
+  console.log("last_chq_no before")
+  console.log(last_chq_no)
+  var remID = "rem_" + last_chq_no
+  var newRem = "<div class='buttonHolder' id ="+remID+">"+
+  "<button name = 'lol' type='button' class='btn btn-danger removeButton' id='rem_"+last_chq_no+"'>Remove Element</button></div>";
+
+  console.log(remID)
+  var last_chq_no = $(parseInt(last_chq_no));
+  console.log("total before")
+  // console.log($(parseInt(('#total_chq').val())));
+  // http://jsfiddle.net/2bwuM/13/
+  // button holder?
+  // $("#eventer button[name=lol]").click(function(event){
+  //   console.log("click in add")
+  //   var temp_total = goRemove(divID, last_chq_no, remID)
+  //   console.log("total after")
+  //   $('#total_chq').val(temp_total);
+    // console.log($(parseInt(('#total_chq').val())));
+    return newRem
+  };
+
+
+// function goRemove(divID, last_chq_no, remID) {
+//   $(this).click(
+//     function(event){
+//     console.log("i clicked remove")
+//     $(divID).remove();
+//     var totalMid = $(parseInt((last_chq_no).val(last_chq_no - 1)));
+//     console.log("total chq during")
+//     // console.log($(parseInt(('#total_chq').val())));
+//     return totalMid
+//   });
+// }
+
+ $(".buttonHolder").click(function(event){
+   console.log("i clicked remove");
+   var remID = $('this').attr('id')
+   var last_chq_no = $('#total_chq').val();
+   $('#new_' + remID).remove();
+   $('#total_chq').val(last_chq_no - 1);
+ });
+
+ $(".ibutton").click(function(event){
+    event.preventDefault();
+    console.log("I clicked the i button");
+    var importId = $(this).attr("id");
+    console.log(importId)
+
+    var $upload = $('.ibutton[exuploadsubmit]');
+    if (importId == "exuploadsubmit") {
+        var data = new FormData($('form').get(0));
+
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+
+        });
+
+        $.ajax(
+        {
+            url: "/importTemplate",
+            type:"POST",
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+
+            success: function(result)
+            {
+              for (i in result) {
+                var fieldID = String(i)
+                var key = result[i]["key"]
+                var value = result[i]["value"]
+                var parent = result[i]["parent"]
+
+                if (result[i]["value"] == undefined) {
+                  var elementField =
+                    '<div class = col-lg-12>'+
+                    '<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">'+
+                    '<div class="card-body">'+
+                    '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                    '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6">'+
+                    key+
+                    '</label>'
+                  var elementInput =
+                      '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-contro l" id="'+fieldID+'_'+key+'" value="">'+
+                      '</div>'+
+                      '</div>'
+                } else {
+                    var elementField =
+                      '<div class = col-lg-12>'+
+                      '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                      '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6">'+
+                      key+
+                      '</label>'
+                    var elementInput =
+                    // '<div class="col-lg-8">'+
+                      '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-contro l" id="'+fieldID+'_'+key+'" value="'+value+'">'+
+                      '</div>'+
+                      '</div>'
+                  }
+                  if (parent) {
+                    var hmm = $(elementInput).each(function(elementInput, i) {
+                      $(i).attr('type', 'hidden')
+                      return i
+                    });
+                    var elementInput = hmm
+                    console.log("element")
+                    console.log(elementInput)
+                  } else {
+                    $("#fieldID").css('background-color','red')
+                  }
+                  $(".test").append(elementField);
+                  $(".test").append(elementInput);
+                  $(".test").attr('id', 'accordionVis')
+            }
+            $(".test").css('display','visible')
+            $(".gbutton").toggle()
+            // $("elementInput").css('display','hidden')
+            // $(".label").css('font-weight','bold')
+          },
+
+
+
+              error: function (xhr, ajaxOptions, thrownError) {
+                console.log("ERROR")
+                alert("Please choose a JSONLD file.")
+              // alert(xhr.status);
+              // alert(thrownError);
+         },
+
+        });
+    } else {
+      console.log("bad logic");
+
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+
+    });
+
+    $.ajax(
+    {
+        url: "/importTemplate",
+        type:"POST",
+        data: {
+          "templateId": importId,
+        },
+
+        success: function(result)
+        {
+          console.log("success~")
+          for (i in result) {
+            var fieldID = String(i)
+            var key = result[i]["key"]
+            var value = result[i]["value"]
+            var parent = result[i]["parent"]
+
+            if (result[i]["value"] == undefined) {
+              var elementField =
+                '<div class = col-lg-12>'+
+                '<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">'+
+                '<div class="card-body">'+
+                '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6 ">'+
+                key+
+                '</label>'
+              var elementInput =
+                  '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-control" id="'+fieldID+'_'+key+'" value="">'+
+                  '</div>'+
+                  '</div>'
+            } else {
+                var elementField =
+                  '<div class = col-lg-12>'+
+                  '<div id="'+fieldID+'_'+key+'" class="form-group row">'+
+                  '<label for="'+fieldID+'_'+key+'" class="col-form-label col-lg-6">'+
+                  key+
+                  '</label>'
+                var elementInput =
+                // '<div class="col-lg-8">'+
+                  '<input type="text" name="'+fieldID+'_'+key+'" class="textinput textInput form-contro l" id="'+fieldID+'_'+key+'" value="'+value+'">'+
+                  '</div>'+
+                  '</div>'
+              }
+              if (parent) {
+                var hmm = $(elementInput).each(function(elementInput, i) {
+                  $(i).attr('type', 'hidden')
+                  return i
+                });
+                var elementInput = hmm
+                console.log("element")
+                console.log(elementInput)
+              } else {
+                $("#fieldID").css('background-color','red')
+              }
+              $(".test").append(elementField);
+              $(".test").append(elementInput);
+              $(".test").attr('id', 'accordionVis')
+        }
+        $(".test").css('display','visible')
+        $(".gbutton").toggle()
+        // $("elementInput").css('display','hidden')
+        // $(".label").css('font-weight','bold')
+        autoPlace()
+      },
+
+
+
+        error: function (xhr, ajaxOptions, thrownError) {
+          console.log("ERROR")
+        alert(xhr.status);
+        alert(thrownError);
+        console.log("this is the thrown error")
+        console.log(thrownError)
+     },
+
+    });
+}
+function autoPlace(arg){
+  var visCheck = ($('.test').is("#accordionVis"))
+  if (visCheck) {
+    var getPlace = [];
+    var f
+    var newf = $("#accordionVis").children()
+    var fields = newf.each( function(){
+    });
+    for (f of fields) {
+      var yes = $(f).attr('placeholder');
+      if (yes) {
+        getPlace.push(yes);
+      }
+    };
+    var x
+    for (x of getPlace) {
+      String(x)
+    }
+    placeList = {getPlace}
+    $(f).autoComplete({
+      resolverSettings: {
+          url: placeList
+      }
+  });
+
+}
+}
+});
+
+});
+
+
+
+</script>
+
+{% endblock %}
