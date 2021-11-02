@@ -1,6 +1,27 @@
 // To Do:
 // fix element sorter icon
-// get group buttons to work
+// get load bar
+// make element browser clear clicking out
+// standardize elList group button data -- make both have type
+// only click once -- ready document?
+// clear browser/sorter
+// get type out of there
+// alphabetical jump / search
+
+
+// NEW UI STUFF
+// alphabetical --> search
+//
+// hamburger menu for entire modal
+// organized alphabetically
+//
+// add families/segments
+// query python side
+// save elements to browser and then render as batch
+// stick menu -> tab selected elements
+// infinite scroll + list
+// ground space launch at stop
+// if alphabetical list --> icons on the side
 
 $( document ).ready(function() {
 
@@ -22,29 +43,40 @@ $( document ).ready(function() {
 
    function getButtons(data)
    {
-     console.log("what am i getting?")
-     console.log(data)
+     // console.log("what am i getting?")
+     // console.log(data)
     // var data = JSON.parse("{{buttonData|escapejs}}");
     // var buttonList = data["contentList"];
     // var buttonList = data["contentList"];
     // console.log("are these buttons?")
     // console.log(buttonList)
+
+
     var buttonList = [];
     for (var x in data){
       var buttonData = data[x];
       var result = $(writeButtons(x, buttonData));
-      console.log("this is result")
-      console.log(result)
       buttonList.push(result);
       var newtype = buttonData["type"]
 
       // $(html)
       // $(".list-group").append(result);
     }
+    var check = data["type"]
+    var pattern = /elList/;
+    var exists = pattern.test(check);
+
+    if (exists) {
+      var newtype = check
+      var createList = "<div class = 'container'><div class = 'elList'></div></div>"
+      $(".browse").empty()
+      $(".browse").html(createList)
+    }
     if (newtype == "getGroupfamilies") {
-    var wrapper = '<div class="card-body"><div class="list-group" style = "width: 100%">'
-    var end = '</div></div>'
+    var wrapper = '<div class="card-group"><div class="card-body"><div class="list-group" style = "width: 100%">'
+    var end = '</div></div></div>'
     var final = wrapper + buttonList + end
+    var addButton = '<input'
     $("#collapseFamGroup").append(buttonList);
   } else if (newtype == "getGroupsegments") {
     $("#collapseSegGroup").append(buttonList);
@@ -53,7 +85,20 @@ $( document ).ready(function() {
   }
   else if (newtype == "elListsegments"){
     console.log("i'm an element list for segments")
+
+    var newdata = Object.entries(data).slice(1)
+    var buttonData = data
+
+    for (var x in buttonData){
+      var wrapper = '<div class ="card"><div class = "card-title" style="text-align:center"><div class="container"><h6><b><a href = "https://schema.space/metasat/'+buttonData[x][0]+'" class = "card-link">'+x+'</a></b></h6></div></div> <div class="card-body"><div class="container"'
+      // var link = '<a href = "https://schema.space/metasat/'+x+'" class = "card-link">'+x+'</a>'
+      var desc = '<div class="card-text">'+buttonData[x][1]+'<br><br>'
+      var check = '<div class="form-check" style="text-align:right"><input class="form-check-input" type="checkbox" value="" id="crab" data-term="'+x+'" data-id="'+buttonData[x][0]+'">'+'<label class="form-check-label" for="'+buttonData[x][0]+'">Add to WorkBook</label>'
+      var end = '</div></div></div></div></div>'
+      var final = wrapper + desc + check + end
+      $(".elList").append(final)
   }
+}
 }
 
    function writeButtons(x, data){
@@ -74,8 +119,6 @@ $( document ).ready(function() {
      // }
      // console.log(x)
      var outer = data["outer"]
-     console.log("wtf")
-     console.log(outer)
      var tag = data["tag"]
      var inner = data["inner"]
      var end = data["end"]
@@ -90,12 +133,12 @@ $( document ).ready(function() {
      // var add = outer+tag+tagID+inner+buttonClass+buttonID+value+end
     // var add = outer+tag+tagID+inner+buttonClass+end
     var add = outer+x+end
-    console.log(add)
+    // console.log(add)
 
      return add
     }
 
-    $(document.querySelector("#getGroupsegments")).click(function(){
+    $(document.querySelector("#getGroupsegments")).one( "click", function(){
       // button[id='elList']"
 
            // console.log("this is this")
@@ -111,8 +154,7 @@ $( document ).ready(function() {
     function lookUp(e){
         var content_id = $(e).attr('data-id')
         var content_type = $(e).attr('data-type')
-        console.log("CONTENT ID")
-        console.log(content_id)
+        var look_id = $(e).attr('data-look')
         $.ajaxSetup({
             headers: { "X-CSRFToken": getCookie("csrftoken") }
 
@@ -124,7 +166,8 @@ $( document ).ready(function() {
             type:"POST",
             data: {
               contentID: content_id,
-              contentType: content_type
+              contentType: content_type,
+              lookID: look_id
             },
             success: function(result)
             {
@@ -144,11 +187,91 @@ $( document ).ready(function() {
       console.log("you are a yar")
       lookUp(this)
     });
-    $("#40element").click(function(){
-      console.log("ok ok ok")
-    });
-    // <button type="button" class="list-group-item list-group-item-action"></button>
+    $("#collapseSegGroup").one( "click", function(){
+      console.log("you clicked seg group")
+      var $this = $(this)
+    $(".modeButton").on("click", function(){
+      $(this).attr("data-toggle", "modal")
+      $(this).attr("data-target", "#browseList")
+      lookUp(this)
+    })
+    $this.toggleClass('active')
+  });
 
-   // var yar = $(getButtons())
-   // console.log("i'm worming")
+
+$("#browseList").on('click', '#crab', function () {
+    console.log('did i click a crab?');
+    var identifier = $(this).attr("data-id")
+    var term = $(this).attr("data-term")
+    console.log(identifier)
+    console.log(term)
+    var newform = '<li class="dd-item list-group-item" data-id="1">'+'<div class="dd-handle">'+term+'</div>'+'</li>'
+    $("#workSort").append(newform)
+
+});
+
+ var options = {
+         'maxDepth': 100,
+         'scroll': 'true',
+}
+   var sorter = $("#elSort").nestable(options);
+   $(".emptyNest").click(function(){
+     console.log("clicked a nest")
+   $('#elSort').nestable('removeAll', function(){
+        console.log('All items deleted');
+    });
+   });
+
+   $(".getJSON").click(function(){
+     console.log("clicked a json")
+     var jResult = $('#workSort').toArray()
+     var newJ = jResult[0]["childNodes"]
+     for (i in newJ){
+       var sugar = newJ[i]["innerHTML"]
+       if (sugar){
+       var newform = '<li class="dd-item list-group-item" data-id="'+sugar+'">'+'<div class="dd-handle">'+'</div>'
+       var mid ='<input type="text">'
+       var ending ='</li>'
+       var field = newform+mid+ending
+       $("#formSort").append(field)
+       $("#formSort").nestable(options)
+
+     }
+   }
+   //   var cars = [];
+   // $(jResult).each(function(i, elem) {
+   //     cars.push($(elem).text());
+   //     console.log("inside cars")
+   //     console.log(cars)
+   // });
+   // console.log("result")
+   // console.log(cars)
+     // makeForm(jResult)
+   });
+
+   function makeForm(e){
+     console.log("this is e")
+     console.log(e)
+     for (x in e){
+       console.log("this is x")
+       console.log(x)
+       console.log("this is e[x]")
+       console.log(e[x])
+       var field = '<input type="text">'
+       $("#formSort").append(field)
+     }
+     // $("#formSort").nestable(e);
+   }
+
+   $('.card').on('click', '#elCheck', function () {
+       console.log('did i click a crab?');
+       var identifier = $(this).attr("data-id")
+       var inputEl = '<li class="dd-item list-group-item">'+'<div class="dd-handle">'+"|||"+'</div>'+'<div class = "card"><div class="card-title">'+identifier+'</div><div class = "card-body"><input type= "text">'+'</div></div></li>'
+       $("#workSpace").append(inputEl)
+       $("#workSpace").nestable(options)
+     })
+
+     $("#testSort").nestable(options)
+
+
  });

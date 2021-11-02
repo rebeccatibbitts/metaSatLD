@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block nav-home %}active{% endblock %}
+
+{% block title %}
+    MetaSat Generator
+{% endblock %}
+
+{% block body %}
+<div class = "container">
+  <div class="form-group align-items-center">
+  <div class="topspacing"></div>
+  <!-- <div style="margin-top: 80px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  z-index: 8;"></div> -->
+      <h1> Generate JSON-LD using MetaSat </h1>
+      <p> This tool generates JSON-LD files using MetaSat vocabulary. Simply fill out a form and press the "Generate!" button to produce a custom JSON-LD file for your mission.</p>
+        <h2> Upload Your Own JSON-LD file</h2>
+        <p> Our tool will auto-generate a form from a valid JSON-LD file.</p>
+<!-- insert File upload field -->
+<!-- template buttons -->
+    <div class= "row">
+      <div class = col-md-6>
+        <form enctype="multipart/form-data">
+          {% csrf_token %}
+          {% crispy form form.helper %}
+          </div>
+            <div class = col-md-6>
+          <div class="buttonHolder">
+            <input type="submit" name="externaltemplate" value="Upload" class="btn btn-primary button white ibutton" id="exuploadsubmit" accept = ".json, .jsonld">
+          </div>
+        </form>
+          </div>
+      </div>
+      <form>
+      <div class="list-group" style = "width: 100%">
+      <div class="dd" style = "width: 100%">
+          <ol class="dd-list" id = "formSort">
+          </ol>
+      </div>
+      </div>
+      </form>
+<hr>
+    <!-- left modal test -->
+    <h2>Element Picker</h2>
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#elementWorkbook">
+    Browse Elements
+  </button>
+
+    <div class="modal left fade" id="elementWorkbook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">WorkBook</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <p> Some explanation of the workbook. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.</p>
+<!-- start picker navigation -->
+<hr>
+<hr>
+<h5>Browse Elements</h5>
+<nav>
+  <div class="accordion" id="accordionParent">
+    <div class="card border-light mb-3">
+      <div class="card-header" id="headingOne">
+          <button class="btn btn-block yar" type="button" data-toggle="collapse" data-target="#collapseSegments" aria-expanded="true" aria-controls="collapseOne"  data-type="getGroup" data-id="segments">
+            <h5 class="mb-0" style="text-transform: uppercase">Segments</h5>
+          </button>
+      </div>
+      <div id="collapseSegments" class="collapse" aria-labelledby="headingOne" data-parent="#accordionParent">
+        <div class="list-group" style = "width: 100%" id="collapseSegGroup">
+          </div>
+        </div>
+    </div>
+    <div class="card border-light mb-3">
+      <div class="card-header" id="headingTwo">
+          <button class="btn btn-block yar" type="button" data-toggle="collapse" data-target="#collapseFamilies" data-type="getGroup" data-id="families" aria-expanded="false" aria-controls="collapseTwo">
+          <h5 class="mb-0" style="text-transform: uppercase">Families</h5>
+          </button>
+      </div>
+      <div id="collapseFamilies" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionParent">
+        <div class="list-group" style = "width: 100%" id = "collapseFamGroup">
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+<!-- end picker navigation -->
+<hr>
+<hr>
+<h5> Element Sorter </h5>
+<button class = "btn btn-danger emptyNest"><span>Clear Elements</span></button>
+<div class="list-group" style = "width: 100%">
+<div class="dd" style = "width: 100%" id="elSort">
+    <ol class="dd-list" id="workSort">
+    </ol>
+</div>
+</div>
+</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary getJSON">Save Elements</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end left modal -->
+
+ <!-- start middle modal -->
+<!-- Modal -->
+<div class="modal right fade" id="browseList" tabindex="-1" role="dialog" aria-labelledby="browseModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Select Elements</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="browse">
+        <p> fetching elements... </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+<script>
+//   $(document).ready(function(){
+//     var options = {
+//             'maxDepth': 100,
+//             'expandBtnHTML': '<button class="dd-action" data-action="expand" type="button"><i class="icon-chevron-right"></i></button>',
+//             'collapseBtnHTML': '<button class="dd-action" data-action="collapse" type="button"><i class="icon-chevron-down"></i></button>'
+// }
+//       $("#elSort").nestable(options);
+//       $(".emptyNest").click(function(){
+//         console.log("clicked a nest")
+//         $('#elSort').nestable('removeAll', function(){
+//            console.log('All items deleted');
+//        });
+//       });
+//
+//       $(".getJSON").click(function(){
+//         console.log("clicked a json")
+//         var jResult = $('#elSort').nestable('toArray')
+//         console.log(jResult)
+//       });
+//   })
+</script>
+
+<!-- <div class="dd" id="nestable-json"></div> -->
+
+<!-- <script>
+var json = '[{"id":1},{"id":2},{"id":3,"children":[{"id":4},{"id":5,"foo":"bar"}]}]';
+var options = {'json': json}
+$('#nestable-json').nestable(options);
+</script> -->
+{% endblock %}

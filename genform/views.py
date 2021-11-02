@@ -22,9 +22,21 @@ def index(request):
     # }
     #
     # templateJSON = json.dumps(templateData)
+    elementList = {}
+    allElements = MetasatElement.objects.filter(deprecated=False).order_by('identifier').only('identifier')
+    print("Building cards...")
+    # for item in allElements:
+    #     elData = {
+    #     'identifier': item.identifier,
+    #     'term': item.term,
+    #     'desc': item.desc,
+    #     }
+    #     elementList[item.identifier] = elData
 
     context = {
             "form": UploadFileForm,
+            "elementList": allElements,
+            # "elementList": elementList,
             # "templateData": templateJSON
             }
     return render(request, "index.html", context)
@@ -54,7 +66,7 @@ def lookUp(request):
                 # "outer": "<div class = col-sm-6>",
                 # "tag" : "<div class='buttonHolder'",
                 # "inner" : "<button type='submit'",
-                "outer": '<button type="button" id="'+str(x.id)+'element">',
+                "outer": '<button type="button" class="modeButton" data-type= "elList" data-id="segments" data-look="'+str(x.id)+'">',
                 # "outer": '<a href="#" class="list-group-item list-group-item-action" id="'+type+'">',
                 # "outer": '<button type="button" id = "elList" data-type = "elList" data-id = "segments" data-trigger="yar"<a href="google.com">',
                 "contentList": x.segment,
@@ -95,19 +107,25 @@ def lookUp(request):
         print("done!")
 
     if contentType == "elList":
+        print("i got an el request")
+        contentRequest = request.POST.get("contentID")
+        contentLook = request.POST.get("lookID")
+        print("our contentLook is")
+        print(contentLook)
         if contentRequest == "segments":
             print("got a seg request")
-            segments = MetasatSegment.objects.order_by('segment')
             seggroups = {}
-            for x in segments:
+            seggroups["type"] = "elListsegments"
+            el_list = []
+            el_q = MetasatElementSegment.objects.filter(segment_id=contentLook)
+            for i in el_q:
+                element = MetasatElement.objects.get(id=i.element_id)
                 print("thinking about...")
-                print(x.segment)
-                el_list = []
-                el_q = MetasatElementSegment.objects.filter(segment_id=x.id)
-                for i in el_q:
-                    element = MetasatElement.objects.get(id=i.element_id)
-                    el_list.append(element.term)
-                segroups[x] = el_list
+                print(element.term)
+                seggroups[element.term] = [element.identifier, element.desc]
+                # el_list.append(element.term)
+                # whatever = MetasatSegment.objects.get(id=contentLook)
+                # seggroups[whatever.segment] = el_list
             contentList = seggroups
         if contentRequest == "families":
             print("got a fam request")
@@ -120,7 +138,7 @@ def lookUp(request):
                 el_q = MetasatElementFamily.objects.filter(elementfamily_id=x.id)
                 for i in el_q:
                     element = MetasatElement.objects.get(id=i.element_id)
-                    el_list.append(element.term)
+                    el_list.append([element.term, element.identifier, element.desc])
                 famgroups[x] = el_list
             contentList = famgroups
 

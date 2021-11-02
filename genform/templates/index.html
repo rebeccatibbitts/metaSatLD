@@ -35,106 +35,82 @@
         </form>
           </div>
       </div>
-    </div>
-<hr>
-    <!-- left modal test -->
-    <h2>Element Picker</h2>
-    <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#elementWorkbook">
-    Browse Elements
-  </button>
+      <hr>
+      <div class = "container">
+        <button class = "btn btn-danger emptyNest"><span>Clear Elements</span></button>
 
-    <div class="modal left fade" id="elementWorkbook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="exampleModalLabel">WorkBook</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      <p> Some explanation of the workbook. Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.</p>
-<!-- start picker navigation -->
-<hr>
-<hr>
-<h5>Browse Elements</h5>
-<nav>
-  <div class="accordion" id="accordionParent">
-    <div class="card border-light mb-3">
-      <div class="card-header" id="headingOne">
-          <button class="btn btn-block yar" type="button" data-toggle="collapse" data-target="#collapseSegments" aria-expanded="true" aria-controls="collapseOne"  data-type="getGroup" data-id="segments">
-            <h5 class="mb-0" style="text-transform: uppercase">Segments</h5>
-          </button>
-      </div>
-      <div id="collapseSegments" class="collapse" aria-labelledby="headingOne" data-parent="#accordionParent">
-        <div class="list-group" style = "width: 100%" id="collapseSegGroup">
-          </div>
-        </div>
-    </div>
-    <div class="card border-light mb-3">
-      <div class="card-header" id="headingTwo">
-          <button class="btn btn-block yar" type="button" data-toggle="collapse" data-target="#collapseFamilies" data-type="getGroup" data-id="families" aria-expanded="false" aria-controls="collapseTwo">
-          <h5 class="mb-0" style="text-transform: uppercase">Families</h5>
-          </button>
-      </div>
-      <div id="collapseFamilies" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionParent">
-        <div class="list-group" style = "width: 100%" id = "collapseFamGroup">
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-<!-- end picker navigation -->
-<hr>
-<hr>
-<h5> Element Sorter </h5>
-<div class="list-group" style = "width: 100%">
-<div class="dd" style = "width: 100%" id="elSort">
-    <ol class="dd-list">
-        <li class="dd-item list-group-item" data-id="1">
-            <div class="dd-handle">Item 1</div>
-        </li>
-        <li class="dd-item list-group-item" data-id="2">
-            <div class="dd-handle">Item 2</div>
-        </li>
-        <li class="dd-item list-group-item" data-id="3">
-            <div class="dd-handle">Item 3</div>
-            <ol class="dd-list">
-                <li class="dd-item list-group-item" data-id="4">
-                    <div class="dd-handle">Item 4</div>
-                </li>
-            </ol>
-        </li>
-    </ol>
-</div>
-</div>
-<button class = "clickme"><span>Serialize</span></button>
-</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- end left modal -->
+        <!-- testing uikit nestable -->
 
-<button type="button" class="elButton">Test ElButton</button>
+        <!-- <ul id="testnest" class="uk-nestable" data-uk-nestable="{maxDepth:100}, {handleClass:uk-nestable-handle}"> -->
+        <form class = "uk-form">
+          <div class ="uk-input"><input type="text"></div>
+          <ul id="testnest" class="uk-nestable" data-uk-nestable="{maxDepth:100}, {handleClass:uk-nestable-handle},{handleClass:'uk-input}">
+                              <li class="uk-nestable-item">
+                                  <div class="uk-nestable-panel">
+                                      <div class="uk-nestable-toggle" data-nestable-action="toggle"></div>
+                                      <i class="uk-nestable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
+                                      Item 1
+                                      <div class ="uk-input">
+                                      <input type="text" class = "uk-input">
+                                    </div>
+                                    </div>
+                              </li>
+                              <li class="uk-nestable-item">
+                                  <div class="uk-nestable-panel">
+                                      <div class="uk-nestable-toggle" data-nestable-action="toggle"></div>
+                                      <i class="uk-nestable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
+                                      Item 2
+                                      <div class ="uk-input">
+                                      <input type="text">
+                                    </div>
+                                  </div>
+                              </li>
+                              <li class="uk-nestable-item">
+                                  <div class="uk-nestable-panel">
+                                      <div class="uk-nestable-toggle" data-nestable-action="toggle"></div>
+                                      <i class="uk-nestable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
+                                      Item 3
+                                      <div class ="uk-input">
+                                      <input type="text">
+                                    </div>
+                                  </div>
+                              </li>
+                          </ul>
+                          </form>
+
+<!-- end test -->
+      <form>
+      <div class="list-group" style = "width: 100%">
+      <div class="dd">
+          <ol class="dd-list" id = "workSpace">
+          </ol>
+      </div>
+      </div>
+      </form>
+      </div>
+<hr>
+</div>
 </div>
 <script>
-  $(document).ready(function(){
-    var options = {
-            'maxDepth': 100,
-            'expandBtnHTML': '<button class="dd-action" data-action="expand" type="button"><i class="icon-chevron-right"></i></button>',
-            'collapseBtnHTML': '<button class="dd-action" data-action="collapse" type="button"><i class="icon-chevron-down"></i></button>'
-}
-      $("#elSort").nestable(options);
-      $(".clickme").click(function(){
-        var results =   $(".dd").nestable('serialize')
-        console.log(results)
-      });
-  })
+//     var options = {
+//             'maxDepth': 100,
+//             'expandBtnHTML': '<button class="dd-action" data-action="expand" type="button"><i class="icon-chevron-right"></i></button>',
+//             'collapseBtnHTML': '<button class="dd-action" data-action="collapse" type="button"><i class="icon-chevron-down"></i></button>'
+// }
+//       $("#elSort").nestable(options);
+//       $(".emptyNest").click(function(){
+//         console.log("clicked a nest")
+//         $('#elSort').nestable('removeAll', function(){
+//            console.log('All items deleted');
+//        });
+//       });
+//
+//       $(".getJSON").click(function(){
+//         console.log("clicked a json")
+//         var jResult = $('#elSort').nestable('toArray')
+//         console.log(jResult)
+//       });
+//   })
 </script>
 
 <!-- <div class="dd" id="nestable-json"></div> -->

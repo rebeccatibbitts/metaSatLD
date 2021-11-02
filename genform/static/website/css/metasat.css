@@ -2,231 +2,284 @@
 
 /* all CSS for small screens, but if larger screen then....*/
 /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
-@media (min-width: 768px) {
 
-    div.newsidebar {
-        padding-right: 20px;
-        padding-left: 20px;
-        padding-bottom: 20px;
-        position:fixed;
-        overflow-y: auto;
-        overflow-x: hidden;
-        max-height: calc(100vh - 80px);
-    }
-}
-
-div.topspacing {
-    margin-top: 80px;
-    overflow-y: hidden;
-    overflow-x: hidden;
-    z-index: 8;
-}
-
-div.mainstuff {
-    min-height: calc(100vh - 230px);
-}
-
-.nav-link {
-    display: block;
-    padding: .5rem .5rem;
-}
-
-/* default bootstrap constrast isn't good enough */
-a:hover, a:active {
-    color: #24557F;
-}
-
-a {
-    color: #337AB7;
-}
-
-.bg-dark {
-    background-color: #292f33 !important;
-}
-
-.btncolor {
-    background-color: #4e687e !important;
-}
-
-
-/*** metasat elements pages ***/
-
-ul.alpha {
-    margin: 0;
-    padding: 0;
-}
-
-li.letter {
-    width: 11.11%;
-    line-height: 2rem;
-    text-align: center;
-    list-style: none;
-    float: left;
-}
-
-/**** resource pages ****/
-
-/* source: https://www.w3schools.com/tags/tag_code.asp */
-code {
-    font-family: Consolas,"courier new";
-    color: crimson;
-    /*background-color: #f1f1f1;*/
-    padding: 2px;
-    font-size: 105%;
-  }
-
-pre {
-    background-color: #444444;
-    color: #cccccc;
-    width: 80%;
-    overflow-x: scroll;
-}
-
-.subject {
-    color: #DE2A12;
-    font-weight: bold;
-}
-
-.predicate {
-    color: #601A4A;
-    font-style: italic;
-}
-
-.object {
-    color: #3C7F90;
-    font-weight: bold;
-    font-style: italic;
-}
-
-.card-body {
-    padding: 0rem .3rem ;
-}
-
-/**basic-table is on the basic topics page**/
-
-table#basic-table {
-    border-collapse: collapse;
-}
-
-table#basic-table, th.basic-header, td.basic-data {
-    border: 1px solid black;
-}
-
-th.basic-header, td.basic-data {
-    padding: 10px;
-}
-
-/**** not sure what pgs these relate to ****/
-
-.panel-heading {
-  background-color: #014e6d!important;
-}
-
-.panel-button a {
-    color: white !important;
-}
-
-.panel-button {
-    font-weight: bold;
-    font-size: 20px;
-    color: #fff !important;
-    /* text-decoration: underline;*/
-    text-decoration: none;
-}
-
-.panel-button:hover {
-    font-weight: bold;
-    font-size: 20px;
-    color: #fff !important;
-    /* text-decoration: underline;*/
-    text-decoration: none;
-}
-
+/* sidebar content */
 body {
-  direction: ltr;
-  text-align: left;
+  margin-top: 50px;
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  color: #39464e;
 }
 
-#containerP,
-#input,
-#complete{
-  width: 512px;
-  height: 32px;
-  line-height: 32px;
-  margin: 0 auto;
+.navbar-default {
+  background-color: #FFF;
+  margin-left: 0;
 }
-#containerP {
+
+.mnb {
+  top: auto;
+  right: 0;
+  margin-left: 32%;
+  height:75px;
+  width: 75px;
+}
+
+.mnb .navbar-toggle button
+{
+  height:100%;
+  width: 100%;
+}
+/*main side bar*/
+.msb {
+  width: 30%;
+  background-color: #F5F7F9;
+  position: fixed;
+  left: 0;
+  top: 75px;
+  min-height: 100%;
+  overflow-y: auto;
+  white-space: wrap;
+  height: 100%;
+  z-index: 1;
+  border-right: 1px solid #ddd;
+}
+.msb .navbar {
+  border: none;
+  margin-left: 0;
+  background-color: inherit;
+}
+.msb .navbar-header {
+  width: 100%;
+  border-bottom: 1px solid #e7e7e7;
+  background: #fff;
+}
+.msb .navbar-nav .panel {
+  border: 0 none;
+  box-shadow: none;
+  margin: 0;
+  background: inherit;
+}
+.msb .navbar-nav li {
+  display: block;
+  width: 100%;
+}
+.msb .navbar-nav li a {
+  padding: 15px;
+  color: #5f5f5f;
+  width: 100%;
+}
+.msb .navbar-nav li a .glyphicon, .msb .navbar-nav li a .fa {
+  margin-right: 8px;
+}
+.msb .nb {
+  padding-top: 5px;
+  padding-left: 10px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+ul.nv,
+ul.ns {
+  position: relative;
+  padding: 0;
+  list-style: none;
+}
+
+.nv {
+  /*ns: nav-sub*/
+}
+.nv li {
+  display: block;
   position: relative;
 }
-#input,
-#complete{
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 0 8px;
-  border: 2px solid #ddd;
-  cursor: text;
+.nv li::before {
+  clear: both;
+  content: "";
+  display: table;
 }
-#input:focus,
-#complete:focus{
-  outline: none;
-  border-color: #aaa;
+.nv li a {
+  color: #444;
+  padding: 10px 25px;
+  display: block;
+  vertical-align: middle;
 }
-#input {
-  color: #333;
-  background-color: transparent;
+.nv li a .ic {
+  font-size: 16px;
+  margin-right: 5px;
+  font-weight: 300;
+  display: inline-block;
 }
-#complete {
-  color: #999;
-}
-
-/* modal custom css for generator */
-
-.modal.left .modal-dialog {
-    position: fixed;
-    margin: auto;
-    width: 1000px;
-    height: 100%;
-    -webkit-transform: translate3d(0%, 0, 0);
-    -ms-transform: translate3d(0%, 0, 0);
-    -o-transform: translate3d(0%, 0, 0);
-    transform: translate3d(0%, 0, 0);
+.nv .ns li a {
+  padding: 10px 50px;
 }
 
-.modal.left .modal-content {
-    height: 100%;
-    overflow-y: auto;
+/*main content wrapper*/
+.mcw {
+  margin-left: 250px;
+  position: relative;
+  min-height: 100%;
+  /*content view*/
+}
+/*globals*/
+a,
+a:focus,
+a:hover {
+  text-decoration: none;
 }
 
-.modal.left .modal-body {
-    padding: 15px 15px 80px;
+.inbox .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+.inbox ul, .inbox li {
+  margin: 0;
+  padding: 0;
+}
+.inbox ul li {
+  list-style: none;
+}
+.inbox ul li a {
+  display: block;
+  padding: 10px 20px;
 }
 
-.modal.left.fade .modal-dialog {
-    left: -1000px;
-    -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
-    -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
-    -o-transition: opacity 0.3s linear, left 0.3s ease-out;
-    transition: opacity 0.3s linear, left 0.3s ease-out;
+.msb, .mnb {
+  -moz-animation: slidein 300ms forwards;
+  -o-animation: slidein 300ms forwards;
+  -webkit-animation: slidein 300ms forwards;
+  animation: slidein 300ms forwards;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
-.modal.left.fade.show .modal-dialog {
+.mcw {
+  -moz-animation: bodyslidein 300ms forwards;
+  -o-animation: bodyslidein 300ms forwards;
+  -webkit-animation: bodyslidein 300ms forwards;
+  animation: bodyslidein 300ms forwards;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+body.msb-x .mcw, body.msb-x .mnb {
+  margin-left: 0;
+  -moz-animation: bodyslideout 300ms forwards;
+  -o-animation: bodyslideout 300ms forwards;
+  -webkit-animation: bodyslideout 300ms forwards;
+  animation: bodyslideout 300ms forwards;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+body.msb-x .msb {
+  -moz-animation: slideout 300ms forwards;
+  -o-animation: slideout 300ms forwards;
+  -webkit-animation: slideout 300ms forwards;
+  animation: slideout 300ms forwards;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+/* Slide in animation */
+@-moz-keyframes slidein {
+  0% {
+    left: -30%;
+  }
+  100% {
     left: 0;
+  }
+}
+@-webkit-keyframes slidein {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 0;
+  }
+}
+@keyframes slidein {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 0;
+  }
+}
+@-moz-keyframes slideout {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -30%;
+  }
+}
+@-webkit-keyframes slideout {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -30%;
+  }
+}
+@keyframes slideout {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -30%;
+  }
+}
+@-moz-keyframes bodyslidein {
+  0% {
+    left: 0;
+  }
+  100% {
+    margin-left: 30%;
+  }
+}
+@-webkit-keyframes bodyslidein {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: 0;
+  }
+}
+@keyframes bodyslidein {
+  0% {
+    margin-left: 0;
+  }
+  100% {
+    margin-left: 30%;
+  }
+}
+@-moz-keyframes bodyslideout {
+  0% {
+    margin-left: 30%;
+  }
+  100% {
+    margin-right: 0;
+  }
+}
+@-webkit-keyframes bodyslideout {
+  0% {
+    margin-left: 30%;
+  }
+  100% {
+    margin-left: 0;
+  }
+}
+@keyframes bodyslideout {
+  0% {
+    margin-left: 30%;
+  }
+  100% {
+    margin-left: 0;
+  }
 }
 
- .list-group button:nth-child( even ) {
-   background-color: grey;
-   color: white;
-}
-
-.list-group button:nth-child( odd ) {
-  background-color: white;
-}
-
-.accordion .card.border-light.mb-3 {
-  text-align: center;
-}
-
+/* element cards */
 .card-header {
   background-color: inherit;
 }
