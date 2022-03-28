@@ -1,10 +1,13 @@
 from django.shortcuts import render
+from django.db.models import Q
 from datetime import datetime
 from pyld import jsonld
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.views.static import serve
 import json
 from collections import OrderedDict
+from django.core.serializers.json import DjangoJSONEncoder
 from .models import *
 from .forms import *
 # from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -13,32 +16,37 @@ import string
 # import mimetypes
 
 def index(request):
-    # templateData = {
-    # "outer": "<div class = col-sm-6>",
-    # "tag" : "<div class='buttonHolder'",
-    # "inner" : "<button type='submit'",
-    # "contentList": ["Cool Template", "Great Template"],
-    # "end" : "</button></div></div>"
-    # }
-    #
-    # templateJSON = json.dumps(templateData)
-    elementList = {}
-    allElements = MetasatElement.objects.filter(deprecated=False).order_by('identifier').only('identifier')
+    new = {}
+    allElements = MetasatElement.objects.filter(deprecated=False).order_by('identifier')
+
     print("Building cards...")
     # for item in allElements:
     #     elData = {
-    #     'identifier': item.identifier,
-    #     'term': item.term,
-    #     'desc': item.desc,
+    #     "identifier": item.identifier,
+    #     "term": item.term,
+    #     "desc": item.desc,
+    #     "synonym": item.synonym,
     #     }
-    #     elementList[item.identifier] = elData
+    #
+    #     for elData["synonym"] in elData:
+    #         if elData["synonym"] is None:
+    #             print("GOT IT")
+    #             elData["synonym"] = "No synonyms"
+    #         else:
+    #             pass
+    #
+    #     new[item.identifier] = elData
+    #
+    #     wrow = json.dumps(new)
+    #
+    #     elementString = json.loads(wrow)
 
     context = {
             "form": UploadFileForm,
             "elementList": allElements,
-            # "elementList": elementList,
-            # "templateData": templateJSON
+            "serCon": "",
             }
+
     return render(request, "index.html", context)
 
 def lookUp(request):
@@ -149,26 +157,29 @@ def lookUp(request):
 
 
 def importTemplate(request):
-    temp = request.POST.get("templateId")
     form = UploadFileForm(request.POST, request.FILES)
     importResult = {}
     if form.is_valid():
+        print("got the file")
         testfile = request.FILES['file']
+        print(testfile)
         boo = handleUpload(testfile)
+        print("dumping boo...")
+        print(boo)
         with open('exfile.jsonld', 'rb+') as new:
             x = new.read()
             importResult = json.loads(x, object_pairs_hook=OrderedDict)
     else:
         print(form.errors)
-    flatStructure = {}
-    flatTemp = makeFlat(importResult, flatStructure, None)
-    flatImport = checkParent(flatTemp)
-    return HttpResponse(
-            json.dumps(flatImport),
-            content_type="application/json"
-        )
+
+    return JsonResponse(data=importResult, safe=False)
+    # return HttpResponse(
+    #         json.dumps(importResult),
+    #         content_type="application/json"
+    #     )
 
 def handleUpload (file):
+    print("in upload")
     with open('exfile.jsonld', 'wb+') as exfile:
         for chunk in file.chunks():
             exfile.write(chunk)
@@ -206,31 +217,56 @@ def checkParent(flatTemp):
 
 def generate(request):
     if request.method == 'POST':
-        genform = request.POST
-        field_list = (genform.dict()).copy()
-        flatList = []
-        del field_list['csrfmiddlewaretoken']
-        del field_list['generate']
-        for path in field_list:
-            nested = re.findall(r"\d+_", path)
-            nunested = path.split("_")
-            placement = nunested[:-1]
-            for num in range(0, len(placement)):
-                placement[num] = int(placement[num])
-            elementName = re.sub(r"\d+_", "", path)
-            inputValue = field_list.get(path)
-            infoDict = {}
-            infoDict["placement"] = placement
-            infoDict["key"] = elementName
-            infoDict["value"] = inputValue
-            flatList.append(infoDict)
-        output = makeJSON(flatList)
-        outfile = json.dumps(output)
+        genform = (request.POST.dict()).copy()
+        print("am i here god damn")
+        print(genform)
+        print(type(genform))
+        infoDict = {}
 
-        context = {
-            "outfile": outfile
-        }
-        return render(request, "success.html", context)
+        for x in genform:
+            print("EXX")
+            print(x)
+            z = json.loads(x)
+            print("zee")
+            print(z)
+
+            inside = {}
+            for m in z:
+                print("emm")
+                print(m)
+
+                try:
+                    children = m["children"]
+                    if m["children"]:
+                        print("found a child")
+
+                        infoDict[m["id"]] = recursiveInput(m["children"])
+
+                except:
+                    try:
+                        infoDict[m["id"]] = m["val"]
+
+                    except KeyError:
+                        pass
+
+        outfile = json.dumps(infoDict)
+
+        return HttpResponse(outfile)
+
+def success(request, outfile):
+    return render("success.html", context)
+
+def recursiveInput(flatList):
+    children = {}
+    for y in flatList:
+        try:
+            if y["children"]:
+                print("found a child")
+                children[y["id"]] = recursiveInput(y["children"])
+
+        except:
+            children[y["id"]] = y["val"]
+    return children
 
 def makeJSON(flatList):
     structure = {}
@@ -284,3 +320,53 @@ def download_file(request):
     response = HttpResponse(fl, content_type='text/plain')
     response['Content-Disposition'] = "attachment; filename="+new_file
     return response
+
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+from itertools import chain
+from operator import attrgetter
+
+
+# Create your views here.
+
+
+def search(request):
+    ctx = {}
+    url_parameter = request.GET.get("q")
+
+    if url_parameter:
+
+        try:
+            qt = MetasatElement.objects.filter(term__icontains=str(url_parameter))
+
+            qs = MetasatElement.objects.filter(synonym__icontains=str(url_parameter))
+
+            qd = MetasatElement.objects.filter(desc__icontains=str(url_parameter))
+
+            qr = list(chain(qt, qs, qd))
+
+            artists = qr
+
+        except (IndexError):
+
+            artists = None
+
+    else:
+        artists = MetasatElement.objects.all()
+
+    ctx["serCon"] = artists
+
+    print("this is SERCON")
+    print(type(ctx["serCon"]))
+    print(ctx["serCon"])
+
+    if request.is_ajax():
+
+        html = render_to_string(
+            template_name="concepts-results-partial.html", context={"serCon": artists}
+        )
+        data_dict = {"html_from_view": html}
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, "index.html", context=ctx)

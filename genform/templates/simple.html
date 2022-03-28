@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags%}
+
+{% block nav-home %}active{% endblock %}
+
+{% block title %}
+    MetaSat Generator
+{% endblock %}
+
+{% block body %}
+
+<form id="thisOne" name="hello"><ol class="uk-nestable" data-uk-nestable="{handleClass:'uk-nestable-handle'}" id="workSpace">
+        <fieldset id="testForm">
+        <li class="uk-nestable-item uk-parent" data-id="ablation" data-val="wwwwwww"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>ablation<input style="display:inline;" type="text" class="uk-input" id="inablation"></div><ul class="uk-nestable-list"><li class="uk-nestable-item" data-id="abort" data-val="rrrrrrrrr"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>abort<input style="display:inline;" type="text" class="uk-input" id="inabort"></div></li></ul></li><li class="uk-nestable-item" data-id="absoluteMagnitude" data-val="tttttt"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>absoluteMagnitude<input style="display:inline;" type="text" class="uk-input" id="inabsoluteMagnitude"></div></li></fieldset>
+    </ol></form>
+
+    <div class="buttonHolder">
+      <input type="button" name="generate" value="Generate" class="btn btn-success button white gbutton" id="genButton" >
+    </div>
+
+    {% endblock %}

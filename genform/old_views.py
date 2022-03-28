@@ -349,3 +349,9 @@ def download_file(request):
     response = HttpResponse(fl, content_type='text/plain')
     response['Content-Disposition'] = "attachment; filename="+new_file
     return response
+
+
+
+
+
+    

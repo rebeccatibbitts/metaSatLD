@@ -8,5 +8,6 @@ urlpatterns = [
     path("importTemplate", views.importTemplate, name="import"),
     path("generate", views.generate, name="generate"),
     path('download_file', views.download_file),
-    path('lookUp', views.lookUp)
+    path('lookUp', views.lookUp),
+    path('search', views.search, name="search")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

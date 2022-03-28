@@ -51,34 +51,34 @@
      console.log("dbuton")
      console.log(data)
 
-    //  $.ajaxSetup({
-    //      headers: { "X-CSRFToken": getCookie("csrftoken") }
-    //
-    //  });
-    //
-    //  $.ajax(
-    //  {
-    //      url: "/download_file",
-    //      type:"POST",
-    //      data: data,
-    //      // cache: false,
-    //      // contentType: false,
-    //      // processData: false,
-    //
-    //      success: function(result)
-    //      {
-    //
-    //    },
-    //
-    //
-    //
-    //        error: function (xhr, ajaxOptions, thrownError) {
-    //          console.log("ERROR")
-    //          alert("Error downloading file.")
-    //        // alert(xhr.status);
-    //        // alert(thrownError);
-    //   },
-    // });
+     $.ajaxSetup({
+         headers: { "X-CSRFToken": getCookie("csrftoken") }
+
+     });
+
+     $.ajax(
+     {
+         url: "/download_file",
+         type:"POST",
+         data: data,
+         // cache: false,
+         // contentType: false,
+         // processData: false,
+
+         success: function(result)
+         {
+
+       },
+
+
+
+           error: function (xhr, ajaxOptions, thrownError) {
+             console.log("ERROR")
+             alert("Error downloading file.")
+           // alert(xhr.status);
+           // alert(thrownError);
+      },
+    });
    });
 </script>
 

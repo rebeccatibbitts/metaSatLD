@@ -12,30 +12,29 @@
 <div class = "container">
   <div class="form-group align-items-center">
   <div class="topspacing"></div>
+  <!-- <div style="margin-top: 80px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  z-index: 8;"></div> -->
       <h1> Generate JSON-LD using MetaSat </h1>
       <p> This tool generates JSON-LD files using MetaSat vocabulary. Simply fill out a form and press the "Generate!" button to produce a custom JSON-LD file for your mission.</p>
         <h2> Upload Your Own JSON-LD file</h2>
         <p> Our tool will auto-generate a form from a valid JSON-LD file.</p>
 <!-- insert File upload field -->
+<!-- template buttons -->
     <div class= "row">
-      <form enctype="multipart/form-data" method = "post" action = "" id = "fileUp">
-        {% csrf_token %}
-          <div class = col-md-6>
-          <input type="file" name="file" value="Upload" class="btn btn-outline-secondary" id="fileIn" accept = ".json, .jsonld">
-          <button type="submit" class = "btn btn-primary" style="display:inline;" id="ibutton">Upload</button>
-      </form>
-        </div>
-
-      <!-- <div class="uk-form-file">
-        <form id = "fileUp">
-      <input type="file" class="btn btn-outline-secondary" id ="fileIn">
-      </form>
+      <div class = col-md-6>
+        <form enctype="multipart/form-data">
+          {% csrf_token %}
+          {% crispy form form.helper %}
+          </div>
+            <div class = col-md-6>
+          <div class="buttonHolder">
+            <input type="submit" name="externaltemplate" value="Upload" class="btn btn-primary button white ibutton" id="exuploadsubmit" accept = ".json, .jsonld">
+          </div>
+        </form>
+          </div>
       </div>
-        {% csrf_token %}
-      <button class="btn btn-primary ibutton" id="exUploadSubmit">Upload JSON-LD</button>
-      </div> -->
-
-
       <hr>
       <div class = "container">
         <div class="buttonHolder">
@@ -73,5 +72,4 @@
 <hr>
 </div>
 </div>
-
 {% endblock %}

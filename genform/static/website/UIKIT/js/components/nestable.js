@@ -444,7 +444,22 @@
             this.reset();
 
             html.removeClass(this.options.movingClass);
+
+// custom drag function for metasatLDgenerator
+            $("#workSpace").find("li").each(function(index, element) {
+              var identifier = $(this).attr("data-id")
+
+              if ( $(element).hasClass("uk-parent") ) {
+
+              $('#in'+identifier).attr("style", "display:none")
+
+            } else if ( $('#in'+identifier).attr("style", "display:none") ) {
+              $('#in'+identifier).attr("style", "display:visible")
+            }
+          });
         },
+
+        // end custom code
 
         dragMove: function(e) {
             var list, parent, prev, next, depth,

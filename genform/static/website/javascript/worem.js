@@ -48,14 +48,11 @@ $( document ).ready(function() {
    $('.card').on('click', '#elCheck', function () {
        console.log('did i click a crab?');
        var identifier = $(this).attr("data-id")
-       var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" id = "in'+identifier+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan">X</button></div></li>'
+       var inputEl = '<li class="uk-nestable-item" id = "'+identifier+'"><div class="uk-nestable-panel" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'"></div></li><button class="btn btn-danger" type="button" value="X" id= "conPan" data-id = "'+identifier+'"></button>'
        $("#workSpace").append(inputEl)
        $("#workSpace").nestable(options).disableSelection()
      })
 
-     $("#workSpace").on('click', "#conPan", function () {
-       var del = $(this).parent().remove()
-   })
 
      $("#rbutton").click(function(){
        $("#success").attr("style", "display:none")
@@ -68,26 +65,50 @@ $( document ).ready(function() {
         event.preventDefault();
         console.log("I clicked the up here button");
 
+        var formData = new FormData();
         var fileInput = $('#fileUp');
+        //
+        // console.log("fileInput")
+        // console.log(fileInput)
+        // console.log("next")
+        // console.log(fileInput[0])
+        // console.log("files time")
+        // var grabFile = fileInput[0].files[0]
+        //
+        // formData.append("grab", grabFile)
 
         var importId = $(this).attr("id");
+        console.log(importId)
 
+        console.log("listing forms")
         var collection = document.forms['fileUp']
+        console.log(collection)
 
-        var form = $(collection).get(0);
-        var data = new FormData(collection);
+        console.log("fomr daya")
+        console.log($(fileInput[0]))
+        console.log(typeof($(fileInput)))
 
         if (importId == "ibutton") {
           console.log("correct id")
-
-          jQuery.each(jQuery(collection)[0].files, function(i, file) {
-   data.append('file-'+i, file);
-
-    });
+            var data = new FormData(collection);
 
           } else {
             console.log("wrong id")
+            data = {}
           }
+
+        console.log(data)
+    //     $.each($(fileInput).get(0).files, function (index, value) {
+    //        formData.append('avatar', value);
+    // });
+    //
+    //     formData.append($('avatar', $('#fileIn'))[0].files[0])
+    //
+    //     console.log(formData)
+
+        // var data = new FormData($('#fileUp').get(0));
+        // console.log("this is data")
+        // console.log(data)
 
 
         $.ajaxSetup({
@@ -108,59 +129,84 @@ $( document ).ready(function() {
             {
               console.log("success upload")
               console.log(resultM)
-              console.log(typeof(resultM))
 
-              function objToHtmlList(obj) {
-                  if (obj instanceof Array) {
-                      // var ol = document.createElement('ol');
-                      var ol = $("workSpace")
-                      for (var child in obj) {
-                        console.log("Array!")
-                          var identifier = child
-                          var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
-                          $("#workSpace").append(inputEl)
-                          inputEl.appendChild(objToHtmlList(obj[child]));
-                          ol.appendChild(inputEl);
+              function upRecur(content) {
+                var children = {}
+                for (y in content) {
 
-                      }
-                      return ol
-                  }
-                  else if (obj instanceof Object && !(obj instanceof String)) {
-                      var ol = $("workSpace")
-                      content = []
-                      for (var child in obj) {
-                        var identifier = child
-
-                        if ( obj[child] instanceof Object ) {
-                          console.log("i am objchild and a object")
-                          console.log(obj[child])
-                          var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
-                          var nestChild = objToHtmlList(obj[child]);
-                          console.log("i am nestChild")
-                          console.log(nestChild)
-                          $("#workSpace").append(inputEl)
-                          var cringe = "#"+identifier+""
-                          $(cringe).css('color', 'red')
-                          $(cringe).append(nestChild)
-                          return ol;
-                        } else {
-                          console.log("i am objchild NOT object")
-                          console.log(obj[child])
-                          var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'" value = "'+obj[child]+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
-                        }
-                      }
-                      return ol;
+                  if ( typeof y === 'object' ) {
+                    console.log("object time")
+                  children[y] =  upRecur(content[y])
                   } else {
+                    var li = document.createElement('li');
+                    children[y] = content[y]
+                    }
 
-                      return document.createTextNode(obj);
-                  }
+                }
 
+            return children  }
+
+            var createSublist = function(container, args) {
+              var ul = document.getElementById('workSpace');
+
+              console.log("I am in the function")
+              console.log("my container is")
+              console.log(container)
+              console.log("my args is")
+              console.log(args)
+
+              var argFix = Object.keys(args).length
+
+              for(var j = 0; j < argFix; j++) {
+                var row = args[j];
+                var li = document.createElement('li');
+                li.innerText = row;
+
+                var nodes = row.nodes;
+                if(nodes && nodes.length) {
+                  createSublist(li, nodes);
+                }
+
+                ul.appendChild(li);
               }
 
-              var genFields = objToHtmlList(resultM)
-              $("#thisOne").append(genFields)
-              $("workSpace").nestable().disableSelection()
-            },
+              container.appendChild(ul);
+          };
+
+
+                  var getSON = JSON.stringify(resultM)
+                  var winSON = upRecur(resultM)
+
+                  var container = document.getElementById("thisOne")
+                    if(container)
+                    {
+                      console.log("i am a container!")
+                      createSublist(container, winSON);
+                    }
+                    else
+                    {
+                      console.log('Container has not been found');
+                    }
+
+                  var items = [];
+
+                    // $( "<ul/>", {
+                    //   "class": "my-new-list",
+                    //   html: items.join( "" )
+                    // }).appendTo( "#workSpace" )
+
+
+                    // var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" id = "in'+identifier+'"></div></li>'
+                    // $("#workSpace").append(inputEl)
+
+                  //  var exoptions = {
+                  //          'maxDepth': 100,
+                  //          'scroll': 'true',
+                  //          'group': result,
+                  // }
+                  //  $("#workSpace").nestable(exoptions).disableSelection()
+
+              },
 
 
 
@@ -169,10 +215,10 @@ $( document ).ready(function() {
                     alert("Please choose a JSONLD file.")
                   // alert(xhr.status);
                   // alert(thrownError);
-             }
-   });
+             },
 
- });
+           });
+   });
 
      $("#genButton").click(function(){
        var dataObj = {}
@@ -261,15 +307,10 @@ $( document ).ready(function() {
         $('.card').on('click', '#elCheck', function () {
             console.log('did i click a crab?');
             var identifier = $(this).attr("data-id")
-            var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
+            var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" id = "in'+identifier+'"></div></li>'
             $("#workSpace").append(inputEl)
             $("#workSpace").nestable(options).disableSelection()
           })
-
-          $("#workSpace").on('click', "#conPan", function () {
-            var del = $(this).parent().remove()
-        })
-
   			})
   		})
   }
@@ -295,6 +336,17 @@ $( document ).ready(function() {
   })
 
   // STOP SEARCH
+
+
+
+  // $('.btn-btn-primary-button').on('click', '#exUploadSubmit', function () {
+  $('#exUploadSubmit').on('click', function (){
+     event.preventDefault();
+     console.log("I clicked the down here button");
+     var importId = $(this).attr("id");
+     console.log(importId)
+
+   });
 
 
 

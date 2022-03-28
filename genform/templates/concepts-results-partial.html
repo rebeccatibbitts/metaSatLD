@@ -1,0 +1,49 @@
+{% if elementList %}
+        {% for item in elementList %}
+
+        <div class="panel">
+        <li>
+          <div class ="card">
+            <div class = "card-title" style="text-align:center">
+              <div class="container">
+                <h6><b><a href = "https://schema.space/metasat/{{ item.identifier }}" class = "card-link">{{item.identifier}}</a></b></h6>
+              </div>
+            </div>
+            <div class="card-body"><div class="container">
+          <div class="card-text">{{ item.desc }}<br><br>
+          <!-- <div class="form-check" style="text-align:right"><input class="form-check-input" type="checkbox" value="" id="elCheck" data-id="{{ item.identifier }}"><label class="form-check-label" for="{{ item.identifier }}">Add to WorkBook</label>
+          </div> -->
+          <button class = "btn-primary" id="elCheck" data-id="{{ item.identifier }}">Add Concept</button>
+        </div>
+      </div>
+    </div>
+  </div>
+        </li>
+      </div>
+        {% endfor %}
+{% elif serCon%}
+    {% for item in serCon %}
+
+    <div class="panel">
+    <li>
+      <div class ="card">
+        <div class = "card-title" style="text-align:center">
+          <div class="container">
+            <h6><b><a href = "https://schema.space/metasat/{{ item.identifier }}" class = "card-link">{{item.identifier}}</a></b></h6>
+          </div>
+        </div>
+        <div class="card-body"><div class="container">
+      <div class="card-text">{{ item.desc }}<br><br>
+      <!-- <div class="form-check" style="text-align:right"><input class="form-check-input" type="checkbox" value="" id="elCheck" data-id="{{ item.identifier }}"><label class="form-check-label" for="{{ item.identifier }}">Add to WorkBook</label>
+      </div> -->
+      <button class = "btn-primary" id="elCheck" data-id="{{ item.identifier }}">Add Concept</button>
+    </div>
+  </div>
+</div>
+</div>
+    </li>
+  </div>
+  {% endfor %}
+{% else %}
+    <li>No concepts found.</li>
+{% endif %}
