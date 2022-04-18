@@ -49,7 +49,7 @@ def index(request):
 
     return render(request, "index.html", context)
 
-def lookUp(request):
+def GlookUp(request):
     contentList = {}
 
     contentType = request.POST.get("contentType")
@@ -154,7 +154,55 @@ def lookUp(request):
             json.dumps(contentList),
             content_type="application/json"
         )
+def lookUp(request):
+    ctx = {}
+    print("got here")
+    contentType = request.POST.get("lookUp")
+    print("my con type is")
+    print(contentType)
 
+    if contentType == "segments":
+        print("got a seg request")
+        req = request.POST.get("contentID")
+        print("my req is")
+        print(req)
+
+        if req == "user":
+            qn = "57"
+        if req == "launch":
+            qn = "55"
+        if req == "space":
+            qn = "54"
+        if req == "ground":
+            qn = "56"
+
+        try:
+            q = MetasatElementSegment.objects.filter(segment_id=qn)
+            el_list = []
+            for i in q:
+                element = MetasatElement.objects.get(id=i.element_id)
+                el_list.append(element)
+
+            artists = el_list
+
+        except (IndexError):
+
+            artists = None
+
+    ctx["serCon"] = artists
+
+    print("this is SERCON")
+    print(type(ctx["serCon"]))
+    print(ctx["serCon"])
+
+    if request:
+        html = render_to_string(
+            template_name="concepts-results-partial.html", context={"serCon": artists}
+        )
+        data_dict = {"html_from_view": html}
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, "index.html", context=ctx)
 
 def importTemplate(request):
     form = UploadFileForm(request.POST, request.FILES)
@@ -221,7 +269,13 @@ def generate(request):
         print("am i here god damn")
         print(genform)
         print(type(genform))
-        infoDict = {}
+        infoDict = {
+            "@context": {
+                "@version": 1.1,
+                "@import": "https://gitlab.com/metasat/metasat-toolkit/-/raw/master/context.jsonld",
+                "@vocab": "https://schema.space/metasat/"
+                }
+            }
 
         for x in genform:
             print("EXX")
@@ -340,11 +394,13 @@ def search(request):
         try:
             qt = MetasatElement.objects.filter(term__icontains=str(url_parameter))
 
+            qi = MetasatElement.objects.filter(identifier__icontains=str(url_parameter))
+
             qs = MetasatElement.objects.filter(synonym__icontains=str(url_parameter))
 
             qd = MetasatElement.objects.filter(desc__icontains=str(url_parameter))
 
-            qr = list(chain(qt, qs, qd))
+            qr = list(set(list(chain(qt, qi, qs, qd))))
 
             artists = qr
 

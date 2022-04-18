@@ -1,0 +1,1 @@
+{"@context": {"@version": 1.1, "@import": "https://gitlab.com/metasat/metasat-toolkit/-/raw/master/context.jsonld", "@vocab": "https://schema.space/metasat/"}, "ablation": {"abort": {"absolute": "this"}}, "absorptance": {"absorbedDose": "data"}}

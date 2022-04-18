@@ -110,6 +110,32 @@ $( document ).ready(function() {
               console.log(resultM)
               console.log(typeof(resultM))
 
+              function reObj(obj){
+                for (var child in obj) {
+                  var identifier = child
+
+                  if ( obj[child] instanceof Object ) {
+                    var reChild = obj[child]
+                    var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div>'
+                    // ul on same level as panel
+                    var ul = '<ul class="uk-nestable-list">'
+                    var ulEnd = '</ul></li>'
+                    var nestChild = objToHtmlList(reChild);
+                    var addChild = ul+nestChild+ulEnd
+                    var final =
+                    $("#workSpace").append(inputEl)
+                    var cringe = "#"+identifier+""
+                    $(cringe).css('color', 'red')
+                    $(cringe).append(nestChild)
+                    return inputEl;
+                  } else {
+                    console.log("i am objchild NOT object")
+                    console.log(obj[child])
+                    var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'" value = "'+obj[child]+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
+                  }
+                }
+              }
+
               function objToHtmlList(obj) {
                   if (obj instanceof Array) {
                       // var ol = document.createElement('ol');
@@ -117,7 +143,7 @@ $( document ).ready(function() {
                       for (var child in obj) {
                         console.log("Array!")
                           var identifier = child
-                          var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
+                          var inputEl = '<li class="uk-nestable-item uk-parent" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
                           $("#workSpace").append(inputEl)
                           inputEl.appendChild(objToHtmlList(obj[child]));
                           ol.appendChild(inputEl);
@@ -132,24 +158,28 @@ $( document ).ready(function() {
                         var identifier = child
 
                         if ( obj[child] instanceof Object ) {
-                          console.log("i am objchild and a object")
+                          console.log("i am reChild and a object")
                           console.log(obj[child])
+                          var reChild = obj[child]
                           var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
-                          var nestChild = objToHtmlList(obj[child]);
+                          var ul = '<ul class="uk-nestable-list">'
+                          var ulEnd = '</ul>'
+                          var nestChild = objToHtmlList(reChild);
+                          var addChild = ul+nestChild+ulEnd
                           console.log("i am nestChild")
                           console.log(nestChild)
                           $("#workSpace").append(inputEl)
                           var cringe = "#"+identifier+""
                           $(cringe).css('color', 'red')
                           $(cringe).append(nestChild)
-                          return ol;
+                          return inputEl;
                         } else {
                           console.log("i am objchild NOT object")
                           console.log(obj[child])
                           var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-panel" data-val = "'+identifier+'" id = "'+identifier+'"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" data-id = "in'+identifier+'" value = "'+obj[child]+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan" data-id = "'+identifier+'">X</button></div></li>'
                         }
                       }
-                      return ol;
+                      return inputEl;
                   } else {
 
                       return document.createTextNode(obj);
@@ -296,6 +326,53 @@ $( document ).ready(function() {
 
   // STOP SEARCH
 
+  $("#ubutton").on("click", function(){
+    console.log("i lciked ubutton")
+    var contentID = $(this).data("id")
+    var lookUp = "segments"
+
+
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+
+    });
+
+    $.ajax(
+    {
+        url: "/lookUp",
+        type: "post",
+        // contentType: "application/json; charset=utf-8",
+        // accept: 'application/json',
+        // dataType: "json",
+        data: {
+          "contentID": contentID,
+          "lookUp": lookUp
+        },
+        // processData: false,
+        // contentType: false,
+
+        success: function(result)
+        {
+          console.log(result)
+          artists_div.html(result['html_from_view'])
+          // $("#listPanel").empty()
+          // for (item in result ) {
+          //   var yes = "<p>"+item.identifier+"</p>"
+          //   $("#listPanel").append(yes)
+          },
+
+
+        error: function (xhr, ajaxOptions, thrownError) {
+          console.log("ERROR")
+        alert(xhr.status);
+        alert(thrownError);
+        console.log("this is the thrown error")
+        console.log(thrownError)
+     },
+
+    });
+
+  });
 
 
       });
