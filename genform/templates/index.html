@@ -14,6 +14,7 @@
   <div class="topspacing"></div>
       <h1> Generate JSON-LD using MetaSat </h1>
       <p> This tool generates JSON-LD files using MetaSat vocabulary. Simply fill out a form and press the "Generate!" button to produce a custom JSON-LD file for your mission.</p>
+
         <!-- <h2> Upload Your Own JSON-LD file</h2>
         <p> Our tool will auto-generate a form from a valid JSON-LD file.</p> -->
 <!-- insert File upload field -->
@@ -43,22 +44,29 @@
         </div>
       <form id ="thisOne" name="hello"><ol class="uk-nestable" data-uk-nestable="{handleClass:'uk-nestable-handle'}" id="workSpace">
         <fieldset id= "testForm">
+        {% csrf_token %}
         </fieldset>
     </ol></form>
     <div class="buttonHolder">
-      <input type="submit" name="generate" value="Generate" class="btn btn-success button white gbutton" id="genButton" >
+      <input type="submit" name="generate" value="Broken Old Generate" class="btn btn-success button white gbutton" id="genButton" >
+    </div>
+    <div class="buttonHolder">
+    <button class = "btn btn-secondary yar" id="yar">New Generate</button>
     </div>
     <div id = "success"style = "display:none">
     <h3> Success! Click the button below to download your JSONLD file.</h3>
     <div class = row>
     <div class = col-sm-6>
-    <form action="download_file" method="post">
+    <form id = "downLoad" action="download_file" method="post">
       {% csrf_token %}
     <div class="buttonHolder">
       <input id = "filedl" type="hidden" name="data">
-      <input type="submit" name="download" value="Download JSONLD" class="btn btn-primary dbutton" id="dbutton">
+      <input type="submit" class="btn btn-primary dbutton" name="Download JSON-LD" value = "Old Download">
     </div>
     </form>
+    <div class="buttonHolder">
+      <button type="button" name="nar" value="nar" class="btn btn-success button white gbutton" id="nar" >New Download</button>
+    </div>
     </div>
 
     <div class = col-sm-6>

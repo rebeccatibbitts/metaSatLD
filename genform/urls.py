@@ -9,5 +9,6 @@ urlpatterns = [
     path("generate", views.generate, name="generate"),
     path('download_file', views.download_file),
     path('lookUp', views.lookUp),
-    path('search', views.search, name="search")
+    path('search', views.search, name="search"),
+    path('testJax', views.testJax, name="testJax")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
