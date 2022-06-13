@@ -40,25 +40,34 @@ $( document ).ready(function() {
 
  // ADD CONCEPT //
 
+function addConcept(e) {
+  var identifier = $(e).attr("data-id")
+  var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" id = "in'+identifier+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan">X</button></div></li>'
+  $("#workSpace").append(inputEl)
+  $("#workSpace").nestable(options).disableSelection()
+}
    $('.card').on('click', '#elCheck', function () {
-       var identifier = $(this).attr("data-id")
-       var inputEl = '<li class="uk-nestable-item" data-id = "'+identifier+'"><div class="uk-nestable-panel"><div class="uk-nestable-handle" style="display:inline;"><div class="uk-nestable-toggle" data-nestable-action="toggle"></div><i class="uk-icon uk-icon-bars uk-margin-small-right"></i></div>'+identifier+'<input  style="display:inline;" type="text" class="uk-input" id = "in'+identifier+'"><button style = "display:inline;" class="btn btn-danger" type="button" name="X" id= "conPan">X</button></div></li>'
-       $("#workSpace").append(inputEl)
-       $("#workSpace").nestable(options).disableSelection()
+       addConcept($(this))
      })
 
 // DELETE CONCEPT //
+
+function deleteConcept(e) {
+      var del = $(e).parent().remove()
+}
      $("#workSpace").on('click', "#conPan", function () {
-       var del = $(this).parent().remove()
+       deleteConcept($(this))
    })
 
 // CLEAR CONCEPTS //
-     $("#rbutton").click(function(){
-       $("#success").attr("style", "display:none")
-       $("#workSpace").empty().attr("style", "display:visible")
-       $("#genButton").attr("style", "display:visible")
-       $("#emptyNest").attr("style", "display:visible")
-     })
+
+function clearConcepts(e) {
+  $("#success").attr("style", "display:none")
+  $("#workSpace").empty().attr("style", "display:visible")
+  $("#genButton").attr("style", "display:visible")
+  $("#emptyNest").attr("style", "display:visible")
+}
+     $("#rbutton").click(clearConcepts())
 
  // GENERATE JSON-LD  (broken on live site)//
 
@@ -122,7 +131,10 @@ $( document ).ready(function() {
 // END GENERATE JSON-LD //
 
 // SEARCH CONCEPTS //
+function searchConcepts(e)
+{
 
+}
       const user_input = $("#user-input")
       const search_icon = $('#search-icon')
       const artists_div = $('#replaceable-content')
@@ -182,55 +194,57 @@ $( document ).ready(function() {
   // END SEARCH CONCEPTS //
 
   // NEW GENERATE ///
-  const goal = 'generate'
-  const delay_by = 700
-  let jax_function = false
+  function generateMetasat(e)
+  {
+// define ajax call
+    var genCall = function genCall(endpoint, request_parameters) {
+      $.getJSON(endpoint, request_parameters)
+        .done(response => {
+          $("#filedl").attr("value", JSON.stringify(response))
+          $("#genButton").attr("style", "display:none")
+          $("#emptyNest").attr("style", "display:none")
+          $("#workSpace").attr("style", "display:none")
+          $("#success").attr("style", "display:visible")
+          })
+    }
 
-  let test_call = function (endpoint, request_parameters) {
-    $.getJSON(endpoint, request_parameters)
-      .done(response => {
-        console.log("success")
-        console.log(response)
+// catching user-input values
+    function catchValues(e) {
+      $("#workSpace li").each(function(i, el) {
+      var elF = $(el).children(0)
+      var elK = $(elF).children(0)
+      var elE = $(elK)[1]
+      var value = $(elE).val()
+     $(e).attr("data-val", value)
+   })
+  }
+    catchValues(e)
 
-        $("#filedl").attr("value", JSON.stringify(response))
-        $("#genButton").attr("style", "display:none")
-        $("#emptyNest").attr("style", "display:none")
-        $("#workSpace").attr("style", "display:none")
-        $("#success").attr("style", "display:visible")
+    // define asynchronous var
+    const goal = 'generate'
+    const delay_by = 700
+    let jax_function = false
 
-        })
-      }
+  // get form data
+    var cow = $("#workSpace").data("nestable").serialize()
+    var newYar = JSON.stringify(cow)
+  	const reqp = {
+  		q: newYar
+  	}
 
+  	// if scheduled_function is NOT false, cancel the execution of the function
+  	if (jax_function) {
+  		clearTimeout(jax_function)
+  	}
+
+  	// setTimeout returns the ID of the function to be executed
+  	jax_function = setTimeout(genCall, delay_by, goal, reqp)
+
+}
 
   $("#yar").click(function() {
-      console.log("YAR received")
-
-      $("#workSpace li").each(function(i, el) {
-        var elF = $(el).children(0)
-        var elK = $(elF).children(0)
-        var elE = $(elK)[1]
-        var value = $(elE).val()
-       $(this).attr("data-val", value)
-
-     });
-
-       var cow = $("#workSpace").data("nestable").serialize()
-       var newYar = JSON.stringify(cow)
-       console.log(newYar)
-       console.log(typeof(newYar))
-
-    	const reqp = {
-    		q: newYar// value of user_input: the HTML element with ID user-input
-    	}
-
-    	// if scheduled_function is NOT false, cancel the execution of the function
-    	if (jax_function) {
-    		clearTimeout(jax_function)
-    	}
-
-    	// setTimeout returns the ID of the function to be executed
-    	jax_function = setTimeout(test_call, delay_by, goal, reqp)
-    })
+    generateMetasat($(this))
+  })
   // END NEW GENERATE //
 
   // NEW DOWNLOAD //
