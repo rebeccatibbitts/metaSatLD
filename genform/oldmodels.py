@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class CrosswalkExternalelement(models.Model):
     identifier = models.CharField(max_length=255)
     label = models.CharField(max_length=50, blank=True, null=True)
@@ -53,7 +52,7 @@ class MetasatElementFamily(models.Model):
 # class MetasatElementMapping(models.Model):
 #     from_element = models.ForeignKey(MetasatElement, models.DO_NOTHING)
 #     to_element = models.ForeignKey(MetasatElement, models.DO_NOTHING)
-
+#
 #     class Meta:
 #         managed = False
 #         db_table = 'metasat_element_mapping'

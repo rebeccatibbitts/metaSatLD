@@ -4,17 +4,21 @@ from datetime import datetime
 from pyld import jsonld
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.template import RequestContext
 from django.views.static import serve
 import json
 from collections import OrderedDict
 from django.core.serializers.json import DjangoJSONEncoder
 from .models import *
 from .forms import *
-# from django.contrib.staticfiles.templatetags.staticfiles import static
 import re
 import string
-# import mimetypes
 
+from django.views.decorators.csrf import requires_csrf_token
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+@ensure_csrf_cookie
+@requires_csrf_token
 def index(request):
     new = {}
     allElements = MetasatElement.objects.filter(deprecated=False).order_by('identifier')
@@ -48,6 +52,12 @@ def index(request):
             }
 
     return render(request, "index.html", context)
+
+
+def documentation(request):
+
+    return render(request, "documentation.html")
+
 
 def GlookUp(request):
     contentList = {}
@@ -204,6 +214,8 @@ def lookUp(request):
 
     return render(request, "index.html", context=ctx)
 
+    # File Upload / JavaScript is broken
+
 def importTemplate(request):
     form = UploadFileForm(request.POST, request.FILES)
     importResult = {}
@@ -263,14 +275,23 @@ def checkParent(flatTemp):
             findParent(i, place, flatTemp)
     return flatTemp
 
-from django.views.decorators.csrf import ensure_csrf_cookie
-
 @ensure_csrf_cookie
 def generate(request):
+    print("token?")
     csrf_token_value = get_token(request)
-    genform = (request.POST.dict()).copy()
-    # context = (request.POST.dict()).copy()
-    print("am i here god damn")
+    print(csrf_token_value)
+
+    # old generate
+    # genform = (request.POST.dict()).copy()
+
+    url_parameter = request.GET.get("q")
+    print("url_parameter")
+    print(url_parameter)
+
+    genform = url_parameter
+
+
+    print("received request...")
     print(genform)
     print(type(genform))
     infoDict = {
@@ -281,36 +302,36 @@ def generate(request):
             }
         }
 
-    for x in genform:
-        print("EXX")
-        print(x)
-        z = json.loads(x)
-        print("zee")
-        print(z)
+    # old generate
+    # for x in genform:
+    #     print("EXX")
+    #     print(x)
+    z = json.loads(genform)
+    print("zee")
+    print(z)
 
-        inside = {}
-        for m in z:
-            print("emm")
-            print(m)
+    inside = {}
+    for m in z:
+        print("emm")
+        print(m)
 
+        try:
+            children = m["children"]
+            if m["children"]:
+                print("found a child")
+
+                infoDict[m["id"]] = recursiveInput(m["children"])
+
+        except:
             try:
-                children = m["children"]
-                if m["children"]:
-                    print("found a child")
+                infoDict[m["id"]] = m["val"]
 
-                    infoDict[m["id"]] = recursiveInput(m["children"])
+            except KeyError:
+                pass
 
-            except:
-                try:
-                    infoDict[m["id"]] = m["val"]
-
-                except KeyError:
-                    pass
-    # context["csrf_token_value": csrf_token_value]
-    # print(context)
     outfile = json.dumps(infoDict)
 
-    return JsonResponse(data=outfile, safe=False)
+    return JsonResponse(data=infoDict, encoder=DjangoJSONEncoder, safe=True, json_dumps_params=None)
 
 def success(request, outfile):
     return render("success.html", context)
@@ -367,8 +388,15 @@ def findParent(x, place, flatImport):
                 flatImport[y]["parent"] = False
     return flatImport
 
+@ensure_csrf_cookie
 def download_file(request):
+    # old download
     fileData = json.loads(request.POST["data"])
+
+    # new download
+    # fileData = json.loads(request.GET.get("q"))
+    print("FILE DATA HERE")
+    print(fileData)
     timestamp = datetime.now().strftime("%Y_%m%d_%H%M%S")
     new_file = "metasat"+timestamp+".jsonld"
     with open(new_file, 'w') as outfile:
@@ -388,7 +416,7 @@ from operator import attrgetter
 from django.middleware.csrf import get_token
 
 
-# Create your views here.
+# Search / Filter Elements
 
 
 def search(request):
@@ -417,6 +445,7 @@ def search(request):
     else:
         artists = MetasatElement.objects.all()
 
+    # artists = "just text"
     ctx["serCon"] = artists
 
     print("this is SERCON")
@@ -425,6 +454,7 @@ def search(request):
 
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         csrf_token_value = get_token(request)
+        html = "<p> i am some text </p>"
         html = render_to_string(template_name="concepts-results-partial.html", context={"serCon": artists, "csrf_token_value" : csrf_token_value})
         data_dict = {"html_from_view": html}
         return JsonResponse(data=data_dict, safe=False)

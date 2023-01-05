@@ -65,11 +65,14 @@
                     <li class="nav-item">
                         <a class="nav-link sr-only sr-only-focusable" href="#content">Skip to main content</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://schema.space/">Return to MetaSat</a>
+                    <li class="nav-item"><h4>
+                        <a class="nav-link" href="/documentation">Documentation</a></h4>
                     </li>
-                    <li class="nav-item {% block nav-home %}{% endblock %}">
-                        <a class="nav-link" href="/">MetaSat Generator</a>
+                    <li class="nav-item"><h4>
+                        <a class="nav-link" href="https://schema.space/contact">Contact</a></h4>
+                    </li>
+                    <li class="nav-item"><h4>
+                        <a class="nav-link" href="https://schema.space/">Return to MetaSat</a></h4>
                     </li>
              </div>
 
@@ -80,12 +83,12 @@
 <nav class="mnb navbar navbar-default">
 <div class="container-fluid">
   <div class="navbar-header">
-    <button type="button" class="btn btn-light navbar-toggle" data-toggle="collapse" data-target="#elBar" aria-expanded="false" aria-controls="navbar">
+<!--     <button type="button" class="btn btn-light navbar-toggle" data-toggle="collapse" data-target="#elBar" aria-expanded="false" aria-controls="navbar">
       <div style="padding: 0px 0;">
          <a href="#" id="msbo"><i class="ic fa fa-bars"></i></a>
       </div>
           </button>
-    </div>
+ -->    </div>
   </div>
   </nav>
 <!--msb: main sidebar-->
@@ -96,9 +99,9 @@
 				<div class="brand-wrapper">
 					<!-- Brand -->
 					<div class="brand-name-wrapper" style="text-align:center; color:gray;">
-            <h4>
+            <h2>
 							Concept Picker
-            </h4>
+            </h2>
 					</div>
 
 				</div>
@@ -126,6 +129,7 @@
   <!--main content view-->
     {% block body %}
     {% endblock %}
+
       </div>
 <script>
   $( document ).ready(function() {

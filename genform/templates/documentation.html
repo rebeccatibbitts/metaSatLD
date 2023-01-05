@@ -1,0 +1,198 @@
+ {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- pg metadata -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{% block description %}{% endblock %}">
+    {% block metadata %}{% endblock %}
+
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+
+    <!-- jquery ui -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- jquery autocomplete -->
+    <script src="https://cdn.jsdelivr.net/gh/xcash/bootstrap-autocomplete@v2.3.7/dist/latest/bootstrap-autocomplete.min.js"></script>
+    <!-- custom jquery -->
+    <script src="{% static 'website/javascript/genform.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nestable2@1.6.0/jquery.nestable.min.js"></script>
+    <script href="https://cdn.jsdelivr.net/npm/nestable2@1.6.0/jquery.nestable.min.css" rel="stylesheet"></script>
+
+    <!-- bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+
+            <!-- UIkit -->
+            <script src="{% static 'website/UIKIT/js/uikit.min.js' %}"></script>
+            <link href="{% static 'website/UIKIT/css/uikit.min.css' %}" rel="stylesheet">
+            <script src="{% static 'website/UIKIT/js/components/nestable.js' %}"></script>
+            <link href="{% static 'website/UIKIT/css/components/nestable.min.css' %}" rel="stylesheet">
+
+    <!-- additional css -->
+    <link href="{% static 'website/css/metasat.css' %}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/51390990b4.js" crossorigin="anonymous"></script>
+    {% block customcss %}{% endblock %}
+    {% block customjs %}{% endblock %}
+
+    <!-- pg title -->
+    <title>Documentation</title>
+
+    <!-- favicon -->
+   <link rel="icon" type="image/png" href="{% static 'website/img/flavicon.png' %}">
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <img class="img-fluid" style="height:58px" src="{% static 'website/img/MetaSat_Big.png' %}" alt="MetaSat logo"></img>
+            <a class="navbar-brand" href="/"><span class="h1">&nbsp;&nbsp;MetaSat Generator</span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+
+                <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link sr-only sr-only-focusable" href="#content">Skip to main content</a>
+                    </li>
+                    <li class="nav-item"><h4>
+                        <a class="nav-link" href="/">Documentation</a></h4>
+                    </li>
+                    <li class="nav-item"><h4>
+                        <a class="nav-link" href="https://schema.space/contact">Contact</a></h4>
+                    </li>
+                    <li class="nav-item"><h4>
+                        <a class="nav-link" href="https://schema.space/">Return to MetaSat</a></h4>
+                    </li>
+             </div>
+
+        </div>
+    </nav>
+
+    <nav class="mnb navbar navbar-default">
+<div class="container-fluid">
+  <div class="navbar-header">
+<!--     <button type="button" class="btn btn-light navbar-toggle" data-toggle="collapse" data-target="#elBar" aria-expanded="false" aria-controls="navbar">
+      <div style="padding: 0px 0;">
+         <a href="#" id="msbo"><i class="ic fa fa-bars"></i></a>
+      </div>
+          </button>
+ -->    </div>
+  </div>
+  </nav>
+
+<!--     <div class="mcw">
+ -->
+  <div class = "container">
+  <div class="form-group align-items-center">
+<h1>About the MetaSat Generator</h1>
+  <div class = "container">
+  <p><a href="https://schema.space/" style="font-weight: bold;">MetaSat</a> is an open metadata toolkit that includes a controlled vocabulary to annotate the data and other information outputs of satellite missions. The MetaSat Generator is an online tool where you can use the MetaSat vocabulary to generate a metadata record in JSON-LD file format, a highly flexible form of RDF that is built to be easily human-writable and machine-readable.</p>
+
+<p>This tool lets you create and fill out a form which will then be converted into a valid JSON-LD file, using MetaSat concepts as keys. For example, this form:</p>
+<div class="card">
+<div class="container">
+  <br>
+ <form>
+  <label for="fname">missionName</label>
+  <input type="text" id="fname" name="fname" disabled="true" placeholder="Artemis I"><br><br>
+  <label for="lname">launchSite</label>
+  <input type="text" id="lname" name="lname" disabled="true" placeholder="Kennedy Space Center"><br><br>
+</form>
+</div>
+</div>
+<p>...would generate into:</p>
+
+<pre><code>{
+  “missionName”: “Artemis I”,
+  “launchSite”: “Kennedy Space Center”
+}
+</code></pre>
+
+  <p>For more information on MetaSat, visit: <a href="https://schema.space/about">https://schema.space/about</a></p>
+  <p>For more information on JSON-LD, visit: <a href="https://schema.space/resources/advanced">https://schema.space/resources/advanced</a></p>
+  <p>For more information on RDF, visit: <a href="https://schema.space/resources/linked-data">https://schema.space/resources/linked-data</a></p>
+  <p>To see all MetaSat guides and resources, visit: <a href="https://schema.space/resources"> https://schema.space/resources</a></p>
+  <p style="font-weight:bold; color:red;">The MetaSat Generator is intended to be used on desktop browsers only.</p>
+</div>
+
+
+<hr>
+  <h1>Getting Started</h1>
+<div class = "container">
+  <p>We highly recommend reading through our beginner's guide to <a href="https://schema.space/resources/basic-topics">Getting Started with MetaSat</a>. For further information, visit: <a href="https://schema.space/resources">https://schema.space/resources</a></p>
+
+<p>All records using the MetaSat vocabulary should start with a context section that declares which vocabularies are used in the record. Our tool automatically adds this section when it generates the JSON-LD file.</p>
+
+<pre><code>
+{
+  "@context": {
+      "@version": 1.1,
+      "@import": "https://gitlab.com/metasat/metasat-toolkit/-/raw/master/context.jsonld",
+      "@vocab": "https://schema.space/metasat/"
+      }
+
+}
+</code></pre>
+
+<p>One way to organize a MetaSat record is to group your metadata under the concept “mission” and then use MetaSat’s four mission segments: “User Segment”, “Launch Segment,” “Ground Segment,” and “Space Segment.”</p>
+
+<p>A mission segment represents concepts related to a specific phase of a space mission. MetaSat concepts in these segments do not have any hierarchical structure, they are simply collected into groupings of concepts based on when or where they are relevant to an overall mission.</p>
+
+<p>One basic organization of a MetaSat record could look as follows:</p>
+
+<pre><code>
+  {
+    “context”: {...},
+    “mission”: {
+        “userSegment”: {...},
+        “launchSegment”:{...},
+        “groundSegment”:{...},
+        “spaceSegment”:{...}
+
+      }
+}
+</code></pre>
+
+<p>For an example of a MetaSat record organized by segments, visit: <a href="https://gitlab.com/metasat/metasat-toolkit/-/blob/master/examples/minxss_example.jsonld">https://gitlab.com/metasat/metasat-toolkit/-/blob/master/examples/minxss_example.jsonld</a></p>
+
+<p>For more example records, visit our <a href="https://gitlab.com/metasat/metasat-toolkit/-/tree/master/examples">GitLab Repository</a>.</p>
+</div>
+<hr>
+<h1>How to Use the MetaSat Generator</h1>
+<div class = "container">
+<p>The Metasat Generator has two main sections. On the right-hand side of the page is your <em>Workspace</em>. Your Workspace will be blank until you add concepts to it using the <em>Concept Picker</em>, a toolbar on the left-hand side of the page. The Concept Picker lets you browse and search the entire MetaSat vocabulary, as well as add concepts to your Workspace.</p>
+
+    <h2>How to Add Concepts to your Workspace</h2>
+      <p>The tool bar on the left side of the screen shows a list of all the concepts in the MetaSat vocabulary. You can browse the vocabulary by scrolling through the list. You can also use the search box at the top of the sidebar to keyword search the vocabulary. <em>DO NOT</em> press “enter” after you type in a keyword. This will refresh the page and your progress will be lost.</p> 
+
+      <p>To add a concept to your workspace, click the blue “Add Concept” button. Doing so will add a form field to your Workspace.</p>
+
+      <p>The form field will be a text input field labeled with the concept name. You can add a value to the concept by typing in the text field.</p>
+
+    <h2>How to Remove Concepts from your Workspace</h2>
+    <p>To delete a concept, press the red “X” button to the right of the concept field. To remove all concepts from the workspace, press the blue “Clear” button.</p>
+    <h2>How to Reorder and Nest Concepts in your Workspace</h2>
+    <p>MetaSat is a non-hierarchical vocabulary. This means that you can create a record in any order you’d like. You can reorder your record by dragging and dropping concepts. You can also drag concepts to nest under other concepts.</p>
+
+<p>For more information on JSON-LD and flexibility, visit: <a href="https://schema.space/resources/advanced">https://schema.space/resources/advanced</a></p>
+  <h2>How to Generate and Download your JSON-LD Record</h2>
+  <p>When you are finished filling out your form, click the green “Generate” button. This will convert the form into a JSON-LD file. A new blue “download” button will appear. Click the button to download your JSON-LD file.</p>
+  <br>
+  <br>
+</div>
+</div>
+</div>
+<!-- </div>
+ --></body>
+  </html>

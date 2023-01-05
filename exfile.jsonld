@@ -1,1 +1,1 @@
-{"ablation": {"antennaGainToNoiseTemperature": "is"}, "absolute": "content"}
+{"@context": {"@version": 1.1, "@import": "https://gitlab.com/metasat/metasat-toolkit/-/raw/master/context.jsonld", "@vocab": "https://schema.space/metasat/"}, "mission": {"userSegment": {"ablation": "this"}, "launchSegment": {"abort": "is"}, "groundSegment": {"aboveMeanSeaLevel": "my"}, "spaceSegment": {"absolute": "example"}}}

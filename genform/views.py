@@ -11,13 +11,12 @@ from collections import OrderedDict
 from django.core.serializers.json import DjangoJSONEncoder
 from .models import *
 from .forms import *
-# from django.contrib.staticfiles.templatetags.staticfiles import static
 import re
 import string
-# import mimetypes
-
 from django.views.decorators.csrf import requires_csrf_token
 from django.views.decorators.csrf import ensure_csrf_cookie
+
+# // INDEX & LOAD ELEMENTS //
 
 @ensure_csrf_cookie
 @requires_csrf_token
@@ -26,26 +25,6 @@ def index(request):
     allElements = MetasatElement.objects.filter(deprecated=False).order_by('identifier')
 
     print("Building cards...")
-    # for item in allElements:
-    #     elData = {
-    #     "identifier": item.identifier,
-    #     "term": item.term,
-    #     "desc": item.desc,
-    #     "synonym": item.synonym,
-    #     }
-    #
-    #     for elData["synonym"] in elData:
-    #         if elData["synonym"] is None:
-    #             print("GOT IT")
-    #             elData["synonym"] = "No synonyms"
-    #         else:
-    #             pass
-    #
-    #     new[item.identifier] = elData
-    #
-    #     wrow = json.dumps(new)
-    #
-    #     elementString = json.loads(wrow)
 
     context = {
             "form": UploadFileForm,
@@ -55,111 +34,150 @@ def index(request):
 
     return render(request, "index.html", context)
 
-def GlookUp(request):
-    contentList = {}
+# // PROJECT DOCUMENTATION //
 
-    contentType = request.POST.get("contentType")
+def documentation(request):
 
-    if contentType == "getGroup":
-        print("got a group request")
-        contentRequest = request.POST.get("contentID")
-        if contentRequest == "segments":
-            print("got a seg request")
-            segments = MetasatSegment.objects.order_by('segment')
-            seggroups = {}
-            for x in segments:
-                print("thinking about...")
-                print(x.segment)
-                type = contentType+contentRequest
-                # el_list = []
-                # el_q = MetasatElementSegment.objects.filter(segment_id=x.id)
-                # for i in el_q:
-                #     element = MetasatElement.objects.get(id=i.element_id)
-                #     el_list.append(element.term)
-                buttonData = {
-                # "outer": "<div class = col-sm-6>",
-                # "tag" : "<div class='buttonHolder'",
-                # "inner" : "<button type='submit'",
-                "outer": '<button type="button" class="modeButton" data-type= "elList" data-id="segments" data-look="'+str(x.id)+'">',
-                # "outer": '<a href="#" class="list-group-item list-group-item-action" id="'+type+'">',
-                # "outer": '<button type="button" id = "elList" data-type = "elList" data-id = "segments" data-trigger="yar"<a href="google.com">',
-                "contentList": x.segment,
-                "type": type,
-                # "end" : "</button></div></div><br>"
-                "end": "</button>"
-                }
-                seggroups[x.segment] = buttonData
-                print("done with")
-                print(x.segment)
-            contentList = seggroups
-        if contentRequest == "families":
-            print("got a fam request")
-            families = MetasatFamilyMap.objects.order_by('family')
-            famgroups = {}
-            for x in families:
-                print("thinking about...")
-                print(x.family)
-                # el_list = []
-                # el_q = MetasatElementFamily.objects.filter(elementfamily_id=x.id)
-                # for i in el_q:
-                #     element = MetasatElement.objects.get(id=i.element_id)
-                #     el_list.append(element.term)
-                buttonData = {
-                # "outer": "<div class = col-sm-6>",
-                # "tag" : "<div class='buttonHolder'",
-                # "inner" : "<button type='submit'",
-                "outer": '<button type="button" class="list-group-item list-group-item-action" data-type = "elList" data-id = "families">',
-                "contentList": x.family,
-                "type": contentType+contentRequest,
-                # "end" : "</button></div></div><br>"
-                "end": "</button>"
-                }
-                famgroups[x.family] = buttonData
-                print("done with")
-                print(x.family)
-            contentList = famgroups
-        print("done!")
+    return render(request, "documentation.html")
 
-    if contentType == "elList":
-        print("i got an el request")
-        contentRequest = request.POST.get("contentID")
-        contentLook = request.POST.get("lookID")
-        print("our contentLook is")
-        print(contentLook)
-        if contentRequest == "segments":
-            print("got a seg request")
-            seggroups = {}
-            seggroups["type"] = "elListsegments"
-            el_list = []
-            el_q = MetasatElementSegment.objects.filter(segment_id=contentLook)
-            for i in el_q:
-                element = MetasatElement.objects.get(id=i.element_id)
-                print("thinking about...")
-                print(element.term)
-                seggroups[element.term] = [element.identifier, element.desc]
-                # el_list.append(element.term)
-                # whatever = MetasatSegment.objects.get(id=contentLook)
-                # seggroups[whatever.segment] = el_list
-            contentList = seggroups
-        if contentRequest == "families":
-            print("got a fam request")
-            families = MetasatFamilyMap.objects.order_by('family')
-            famgroups = {}
-            for x in families:
-                print("thinking about...")
-                print(x.family)
-                el_list = []
-                el_q = MetasatElementFamily.objects.filter(elementfamily_id=x.id)
-                for i in el_q:
-                    element = MetasatElement.objects.get(id=i.element_id)
-                    el_list.append([element.term, element.identifier, element.desc])
-                famgroups[x] = el_list
-            contentList = famgroups
+# // GENERATE JSONLD FROM FORM FIELDS //
 
-    return HttpResponse(
-            json.dumps(contentList),
-            content_type="application/json"
-        )
+@ensure_csrf_cookie
+def generate(request):
+    csrf_token_value = get_token(request)
+
+    url_parameter = request.GET.get("q")
+
+    genform = url_parameter
+
+    print("received request...")
+    
+    infoDict = {
+        "@context": {
+            "@version": 1.1,
+            "@import": "https://gitlab.com/metasat/metasat-toolkit/-/raw/master/context.jsonld",
+            "@vocab": "https://schema.space/metasat/"
+            }
+        }
+
+    z = json.loads(genform)
+    print("zee")
+    print(z)
+
+    inside = {}
+    for m in z:
+        print("emm")
+        print(m)
+
+        try:
+            children = m["children"]
+            if m["children"]:
+                print("found a child")
+
+                infoDict[m["id"]] = recursiveInput(m["children"])
+
+        except:
+            try:
+                infoDict[m["id"]] = m["val"]
+
+            except KeyError:
+                pass
+
+    outfile = json.dumps(infoDict)
+
+    return JsonResponse(data=infoDict, encoder=DjangoJSONEncoder, safe=True, json_dumps_params=None)
+
+
+# // RECURSIVELY BUILD JSONLD //
+
+def recursiveInput(flatList):
+    children = {}
+    for y in flatList:
+        try:
+            if y["children"]:
+                print("found a child")
+                children[y["id"]] = recursiveInput(y["children"])
+
+        except:
+            children[y["id"]] = y["val"]
+    return children
+
+# // DOWNLOAD JSONLD FILE //
+
+@ensure_csrf_cookie
+def download_file(request):
+    fileData = json.loads(request.POST["data"])
+    print("FILE DATA HERE")
+    print(fileData)
+    timestamp = datetime.now().strftime("%Y_%m%d_%H%M%S")
+    new_file = "metasat"+timestamp+".jsonld"
+    with open(new_file, 'w') as outfile:
+         outfile.write(json.dumps(fileData))
+         outfile.close()
+    print(new_file)
+    fl = open(new_file, 'r')
+    response = HttpResponse(fl, content_type='text/plain')
+    response['Content-Disposition'] = "attachment; filename="+new_file
+    return response
+
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+from itertools import chain
+from operator import attrgetter
+from django.middleware.csrf import get_token
+
+
+# // SEARCH & FILTER ELEMENTS //
+
+def search(request):
+    ctx = {}
+    url_parameter = request.GET.get("q")
+
+    if url_parameter:
+
+        try:
+            qt = MetasatElement.objects.filter(term__icontains=str(url_parameter))
+
+            qi = MetasatElement.objects.filter(identifier__icontains=str(url_parameter))
+
+            qs = MetasatElement.objects.filter(synonym__icontains=str(url_parameter))
+
+            qd = MetasatElement.objects.filter(desc__icontains=str(url_parameter))
+
+            qr = list(set(list(chain(qt, qi, qs, qd))))
+
+            artists = qr
+
+        except (IndexError):
+
+            artists = None
+
+    else:
+        artists = MetasatElement.objects.all()
+
+    # artists = "just text"
+    ctx["serCon"] = artists
+
+    print("this is SERCON")
+    print(type(ctx["serCon"]))
+    print(ctx["serCon"])
+
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        csrf_token_value = get_token(request)
+        html = "<p> i am some text </p>"
+        html = render_to_string(template_name="concepts-results-partial.html", context={"serCon": artists, "csrf_token_value" : csrf_token_value})
+        data_dict = {"html_from_view": html}
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, "index.html", context=ctx)
+
+
+# // UNFINISHED FEATURES //
+
+
+    # // TESTING SEGMENT QUERIES (JAVASCRIPT IS UNFINISHED) //
+
 def lookUp(request):
     ctx = {}
     print("got here")
@@ -210,6 +228,8 @@ def lookUp(request):
 
     return render(request, "index.html", context=ctx)
 
+# // UPLOAD FILE - JAVASCRIPT IS UNFINISHED //
+
 def importTemplate(request):
     form = UploadFileForm(request.POST, request.FILES)
     importResult = {}
@@ -217,9 +237,9 @@ def importTemplate(request):
         print("got the file")
         testfile = request.FILES['file']
         print(testfile)
-        boo = handleUpload(testfile)
-        print("dumping boo...")
-        print(boo)
+        b = handleUpload(testfile)
+        print("dumping b...")
+        print(b)
         with open('exfile.jsonld', 'rb+') as new:
             x = new.read()
             importResult = json.loads(x, object_pairs_hook=OrderedDict)
@@ -238,229 +258,3 @@ def handleUpload (file):
         for chunk in file.chunks():
             exfile.write(chunk)
     return exfile
-
-
-def makeFlat (file, flatStructure, previous):
-    current = 0
-    for i in file:
-        if previous == None:
-            path = current
-        else:
-            path = str(previous)+"_"+str(current)
-
-        if isinstance(file[i], dict):
-            flatStructure[str(path)] = {}
-            parent = flatStructure[str(path)]
-            parent["key"] = i
-            makeFlat(file[i], flatStructure, path)
-        else:
-            flatStructure[str(path)] = {}
-            child = flatStructure[str(path)]
-            child["key"] = i
-            child["value"] = file[i]
-        current+=1
-    return flatStructure
-
-def checkParent(flatTemp):
-    for i in flatTemp:
-        place = i.split("_")
-        if len(place) == 1:
-            flatTemp[i]["parent"] = True
-            findParent(i, place, flatTemp)
-    return flatTemp
-
-@ensure_csrf_cookie
-def generate(request):
-    print("token?")
-    csrf_token_value = get_token(request)
-    print(csrf_token_value)
-
-    # old generate
-    # genform = (request.POST.dict()).copy()
-
-    url_parameter = request.GET.get("q")
-    print("url_parameter")
-    print(url_parameter)
-
-    genform = url_parameter
-
-
-    print("received request...")
-    print(genform)
-    print(type(genform))
-    infoDict = {
-        "@context": {
-            "@version": 1.1,
-            "@import": "https://gitlab.com/metasat/metasat-toolkit/-/raw/master/context.jsonld",
-            "@vocab": "https://schema.space/metasat/"
-            }
-        }
-
-    # old generate
-    # for x in genform:
-    #     print("EXX")
-    #     print(x)
-    z = json.loads(genform)
-    print("zee")
-    print(z)
-
-    inside = {}
-    for m in z:
-        print("emm")
-        print(m)
-
-        try:
-            children = m["children"]
-            if m["children"]:
-                print("found a child")
-
-                infoDict[m["id"]] = recursiveInput(m["children"])
-
-        except:
-            try:
-                infoDict[m["id"]] = m["val"]
-
-            except KeyError:
-                pass
-
-    outfile = json.dumps(infoDict)
-
-    return JsonResponse(data=infoDict, encoder=DjangoJSONEncoder, safe=True, json_dumps_params=None)
-
-def success(request, outfile):
-    return render("success.html", context)
-
-def recursiveInput(flatList):
-    children = {}
-    for y in flatList:
-        try:
-            if y["children"]:
-                print("found a child")
-                children[y["id"]] = recursiveInput(y["children"])
-
-        except:
-            children[y["id"]] = y["val"]
-    return children
-
-def makeJSON(flatList):
-    structure = {}
-    for x in flatList:
-        if len(x["placement"]) == 1:
-            parent = x["key"]
-            children = recursiveBuild(x, flatList)
-            structure[x["key"]] = children
-    return structure
-
-def recursiveBuild(x, flatList):
-    children = {}
-    for y in flatList:
-        if y["placement"][:-1] == x["placement"]:
-            #### CHECK THIS LATER
-            if y["value"] == "":
-                children[y["key"]] = recursiveBuild(y, flatList)
-                # check = recursiveBuild(y, flatList)
-                # if check == None:
-                #     children[y["key"]] = y["value"]
-            else:
-                children[y["key"]] = y["value"]
-    return children
-
-def findParent(x, place, flatImport):
-    for y in flatImport:
-        newPlace = y.split("_")
-        if newPlace[:-1] == place:
-            #### CHECK THIS LATER
-            try:
-                value = flatImport[y]["value"]
-            except KeyError:
-                flatImport[y]["parent"] = True
-                findParent(y, newPlace, flatImport)
-                # check = recursiveBuild(y, flatList)
-                # if check == None:
-                #     children[y["key"]] = y["value"]
-            else:
-                flatImport[y]["parent"] = False
-    return flatImport
-
-@ensure_csrf_cookie
-def download_file(request):
-    # old download
-    fileData = json.loads(request.POST["data"])
-
-    # new download
-    # fileData = json.loads(request.GET.get("q"))
-    print("FILE DATA HERE")
-    print(fileData)
-    timestamp = datetime.now().strftime("%Y_%m%d_%H%M%S")
-    new_file = "metasat"+timestamp+".jsonld"
-    with open(new_file, 'w') as outfile:
-         outfile.write(json.dumps(fileData))
-         outfile.close()
-    print(new_file)
-    fl = open(new_file, 'r')
-    response = HttpResponse(fl, content_type='text/plain')
-    response['Content-Disposition'] = "attachment; filename="+new_file
-    return response
-
-from django.shortcuts import render
-from django.template.loader import render_to_string
-from django.http import JsonResponse
-from itertools import chain
-from operator import attrgetter
-from django.middleware.csrf import get_token
-
-
-# Create your views here.
-
-
-def search(request):
-    ctx = {}
-    url_parameter = request.GET.get("q")
-
-    if url_parameter:
-
-        try:
-            qt = MetasatElement.objects.filter(term__icontains=str(url_parameter))
-
-            qi = MetasatElement.objects.filter(identifier__icontains=str(url_parameter))
-
-            qs = MetasatElement.objects.filter(synonym__icontains=str(url_parameter))
-
-            qd = MetasatElement.objects.filter(desc__icontains=str(url_parameter))
-
-            qr = list(set(list(chain(qt, qi, qs, qd))))
-
-            artists = qr
-
-        except (IndexError):
-
-            artists = None
-
-    else:
-        artists = MetasatElement.objects.all()
-
-    # artists = "just text"
-    ctx["serCon"] = artists
-
-    print("this is SERCON")
-    print(type(ctx["serCon"]))
-    print(ctx["serCon"])
-
-    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-        csrf_token_value = get_token(request)
-        html = "<p> i am some text </p>"
-        html = render_to_string(template_name="concepts-results-partial.html", context={"serCon": artists, "csrf_token_value" : csrf_token_value})
-        data_dict = {"html_from_view": html}
-        return JsonResponse(data=data_dict, safe=False)
-
-    return render(request, "index.html", context=ctx)
-
-def testJax(request):
-    print("got client side")
-    url_parameter = request.GET.get("q")
-    print("url_parameter")
-    print(url_parameter)
-    wow = {
-    "somekey": "somevalue"
-    }
-    return JsonResponse(data=wow, safe=False)

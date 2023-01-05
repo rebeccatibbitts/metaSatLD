@@ -11,22 +11,31 @@
 {% block body %}
 <div class = "container">
   <div class="form-group align-items-center">
-  <div class="topspacing"></div>
-      <h1> Generate JSON-LD using MetaSat </h1>
-      <p> This tool generates JSON-LD files using MetaSat vocabulary. Simply fill out a form and press the "Generate!" button to produce a custom JSON-LD file for your mission.</p>
+<!--   <div class="topspacing"></div>
+ -->      <h1>Create Satellite Mission Metadata using MetaSat</h1>
+      <p>This online tool allows users to create their own metadata record using <a href="https://schema.space/" style="font-weight: bold;">MetaSat</a>, a controlled vocabulary designed to describe satellite mission operations, observations, and administration.</p>
 
-        <!-- <h2> Upload Your Own JSON-LD file</h2>
-        <p> Our tool will auto-generate a form from a valid JSON-LD file.</p> -->
-<!-- insert File upload field -->
-    <!-- <div class= "row">
+    <p>Users customize an online form which will then be converted into the machine and human readable JSON-LD file format. The MetaSat Generator supports flexible and nested data structures.</p>
+
+      <p>Read our <a href="/documentation" style="font-weight: bold;">User’s Guide</a> to get started with metadata.</p>
+
+        <p style="font-weight: bold;">The MetaSat Generator is intended to be used on desktop browsers only. 
+</p>
+
+<!-- File Upload - JavaScript is broken -->
+
+<!--         <h2> Upload Your Own JSON-LD file</h2>
+        <p> Our tool will auto-generate a form from a valid JSON-LD file.</p>
+insert File upload field
+    <div class= "row">
       <form enctype="multipart/form-data" method = "post" action = "" id = "fileUp">
         {% csrf_token %}
           <div class = col-md-6>
           <input type="file" name="file" value="Upload" class="btn btn-outline-secondary" id="fileIn" accept = ".json, .jsonld">
           <button type="submit" class = "btn btn-primary" style="display:inline;" id="ibutton">Upload</button>
       </form>
-        </div> -->
-
+        </div>
+ -->
       <!-- <div class="uk-form-file">
         <form id = "fileUp">
       <input type="file" class="btn btn-outline-secondary" id ="fileIn">
@@ -39,20 +48,71 @@
 
       <hr>
       <div class = "container">
-        <div class="buttonHolder">
-        <button class = "btn btn-danger emptyNest" id="emptyNest">Clear Concepts</button>
+        <h2>Workspace</h2>
+        <!-- <p>&#x2B05;Get started with MetaSat by adding a concept from the Concept Picker.</p> -->
+      <h3>Quick Add</h3>
+      <div class="container-fluid" style="width:100%; display:flex">
+        <div class="panel">
+          <div class ="card">
+          <div class="card-text">
+          <button class = "btn btn-primary" id="elCheck" data-id="mission">Add Mission</button>
         </div>
+      </div>
+      
+    </div>
+        <div class="panel">
+          <div class ="card">
+          <div class="card-text">
+          <button class = "btn btn-primary" id="elCheck" data-id="userSegment">Add User Segment</button>
+        </div>
+      </div>
+    </div>
+
+     <div class="panel">
+          <div class ="card">
+          <div class="card-text">
+          <button class = "btn btn-primary" id="elCheck" data-id="launchSegment">Add Launch Segment</button>
+        </div>
+      </div>
+    </div>
+
+     <div class="panel">
+          <div class ="card">
+          <div class="card-text">
+          <button class = "btn btn-primary" id="elCheck" data-id="groundSegment">Add Ground Segment</button>
+        </div>
+      </div>
+    </div>
+
+     <div class="panel">
+          <div class ="card">
+          <div class="card-text">
+          <button class = "btn btn-primary" id="elCheck" data-id="spaceSegment">Add Space Segment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<br>
+<div class="container-fluid" style="width:100%; display:flex">
+
+    <div class="buttonHolder">
+    <button class = "btn btn-danger emptyNest" id="emptyNest">Clear Concepts</button>
+  </div>
+
+    <div class="buttonHolder">
+    <button class = "btn btn-success button white yar" id="yar">Generate</button>
+    </div>
+  </div>
+  <br>
+
+
       <form id ="thisOne" name="hello"><ol class="uk-nestable" data-uk-nestable="{handleClass:'uk-nestable-handle'}" id="workSpace">
         <fieldset id= "testForm">
         {% csrf_token %}
         </fieldset>
     </ol></form>
-    <div class="buttonHolder">
-      <input type="submit" name="generate" value="Broken Old Generate" class="btn btn-success button white gbutton" id="genButton" >
-    </div>
-    <div class="buttonHolder">
-    <button class = "btn btn-secondary yar" id="yar">New Generate</button>
-    </div>
+
+
     <div id = "success"style = "display:none">
     <h3> Success! Click the button below to download your JSONLD file.</h3>
     <div class = row>
@@ -61,12 +121,9 @@
       {% csrf_token %}
     <div class="buttonHolder">
       <input id = "filedl" type="hidden" name="data">
-      <input type="submit" class="btn btn-primary dbutton" name="Download JSON-LD" value = "Old Download">
+      <input type="submit" class="btn btn-secondary dbutton" name="Download JSON-LD" value = "Download">
     </div>
     </form>
-    <div class="buttonHolder">
-      <button type="button" name="nar" value="nar" class="btn btn-success button white gbutton" id="nar" >New Download</button>
-    </div>
     </div>
 
     <div class = col-sm-6>
@@ -79,7 +136,13 @@
       </div>
       </div>
 <hr>
+
+  <div>
+      <p><em style="color:gray;">The MetaSat Generator was developed by Rebecca Tibbitts in collaboration with the John G. Wolbach Library.</em></p>
+  </div>
+
 </div>
 </div>
+
 
 {% endblock %}
